@@ -2,6 +2,11 @@
   "name": "tubes-polygon",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production"
+  },
   "repository": "https://github.com/marcellof23/Tubes-polygon.git",
   "author": "Marcello Faria <01faria.marcello@gmail.com>",
   "license": "MIT",
