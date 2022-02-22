@@ -43,7 +43,9 @@ function main() {
 function canvas() {
   const element = document.createElement("div");
   element.className = "canvas-wrapper";
-  element.innerHTML = `<canvas id="webgl" width="600" height="600"></canvas>`;
+  element.innerHTML = `<canvas id="webgl" width="600" height="600">
+  Oops ... your browser doesn't support the HTML5 canvas element
+  </canvas>`;
 
   return element;
 }
