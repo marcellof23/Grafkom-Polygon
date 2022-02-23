@@ -5,11 +5,46 @@
     <meta charset="utf-8" />
     <title>Getting Started</title>
   </head>
+  <script id="vertex-shader" type="x-shader/x-vertex">
+
+    attribute vec4 vPosition;
+    attribute vec4 vColor;
+    
+    varying vec4 fColor;
+    
+    void
+    main()
+    {
+        gl_Position = vPosition;
+        fColor = vColor;
+    }
+    </script>
+    
+    <script id="fragment-shader" type="x-shader/x-fragment">
+    
+    precision mediump float;
+    
+    varying vec4 fColor;
+    void
+    main()
+    {
+        gl_FragColor = fColor;
+    }
+    </script>
+  <script type="text/javascript" src="https://twgljs.org/dist/3.x/twgl.min.js"></script>
+  <script type="text/javascript" src="helpers/webgl-utils.js"></script>
+  <script type="text/javascript" src="helpers/initShaders.js"></script>
+  <script type="text/javascript" src="../dist/main.js"></script>
+
   <body>
-    <script src="https://twgljs.org/dist/3.x/twgl.min.js"></script>
-    <script src="../dist/main.js"></script>
+  
+    <div class="canvas-wrapper">
+        <canvas id="webgl">
+        Oops ... your browser doesn't support the HTML5 canvas element
+        </canvas>
+    </div>
     <div>
-      <select id = "mymenu" size = "7">
+      <select id = "colorMenu" size = "7">
           <option value = "0">Black</option>
           <option value = "1">Red</option>
           <option value = "2">Yellow</option>

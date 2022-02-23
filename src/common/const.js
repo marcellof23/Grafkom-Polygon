@@ -3,25 +3,25 @@ import { vec4 } from "../helpers/helper";
 
 //Vertex shader program
 var VSHADER_SOURCE = `
-attribute vec4 vPosition;
-attribute vec4 vColor;
+  attribute vec4 vPosition;
+  attribute vec4 vColor;
 
-varying vec4 fColor;
+  varying vec4 fColor;
 
-void
-main()
-{
-    gl_Position = vPosition;
-    fColor = vColor;
-}`;
+  void
+  main()
+  {
+      gl_Position = vPosition;
+      fColor = vColor;
+  }`;
 
 // Fragment shader program
 var FSHADER_SOURCE = `
-    precision mediump float;
-    varying vec4 fColor;
-    void main() {
-      gl_FragColor = fColor;
-    }`;
+  precision mediump float;
+  varying vec4 fColor;
+  void main() {
+    gl_FragColor = fColor;
+  }`;
 
 var offsetLoc;
 

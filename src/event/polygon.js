@@ -1,6 +1,14 @@
 import { vec2, vec4, flatten } from "../helpers/helper";
 
-import { index, cindex, colors, t } from "../common/const";
+import {
+  index,
+  cindex,
+  colors,
+  t,
+  numPolygons,
+  start,
+  numIndices,
+} from "../common/const";
 
 function eventPolygon(event, canvas, gl, cBufferId, bufferId) {
   t = vec2(
