@@ -1,4 +1,4 @@
-import { offsetLoc } from "../shaders/const";
+import { offsetLoc } from "../common/const";
 var shapes = []; // The array for the position of Triangle with mouse click
 
 function click(ev, gl, canvas) {
