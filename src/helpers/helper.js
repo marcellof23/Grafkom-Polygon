@@ -1,9 +1,9 @@
-function _argumentsToArray(args) {
+function argsToArray(args) {
   return [].concat.apply([], Array.prototype.slice.apply(args));
 }
 
 function vec2() {
-  var result = _argumentsToArray(arguments);
+  var result = argsToArray(arguments);
 
   switch (result.length) {
     case 0:
@@ -16,7 +16,7 @@ function vec2() {
 }
 
 function vec4() {
-  var result = _argumentsToArray(arguments);
+  var result = argsToArray(arguments);
 
   switch (result.length) {
     case 0:
@@ -63,4 +63,4 @@ function flatten(v) {
   return floats;
 }
 
-export { _argumentsToArray, vec2, vec4, flatten };
+export { argsToArray, vec2, vec4, flatten };

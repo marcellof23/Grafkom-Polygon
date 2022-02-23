@@ -14,7 +14,7 @@ import {
   start,
 } from "./common/const";
 import { eventPolygon } from "./event/polygon";
-import { _argumentsToArray, vec2, vec4, flatten } from "./helpers/helper";
+import { argsToArray, vec2, vec4, flatten } from "./helpers/helper";
 
 function main() {
   // Retrieve  canvas element
