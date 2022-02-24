@@ -47,6 +47,24 @@ var numIndices = [];
 numIndices[0] = 0;
 var start = [0];
 
+// kayanya bakalan isi jenis shape, array shapenya, sama warnanya?
+// jenis shapenya kayanya refer ke array features index 0-3? jadi isinya angka
+let shapes = [];
+
+const features = [
+  "line",
+  "square",
+  "rectangle",
+  "polygon",
+  "move",
+  "changeLine",
+  "changeSquare",
+  "changePolygon"
+]
+let featuresIndex = 0;
+
+let isDrawing = false;
+
 export {
   VSHADER_SOURCE,
   FSHADER_SOURCE,
@@ -59,4 +77,8 @@ export {
   numPolygons,
   numIndices,
   start,
+  features,
+  featuresIndex,
+  shapes,
+  isDrawing,
 };
