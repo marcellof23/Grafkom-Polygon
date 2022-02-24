@@ -17,6 +17,7 @@ import { vec2, vec4, flatten } from "./helpers/helper";
 
 var gl;
 var canvas;
+var bufferId, cBufferId;
 
 function createColorMenuEventListener() {
   var m = document.getElementById("colorMenu");
@@ -84,7 +85,7 @@ function render() {
   window.requestAnimFrame(render);
 }
 
-function main() {
+function init() {
   // Retrieve  canvas element
   canvas = document.getElementById("webgl");
   // Get the rendering context
@@ -110,7 +111,7 @@ function main() {
   gl.useProgram(program);
 
   // Create buffer ,set buffer and copy data into a buffer for position
-  var bufferId = gl.createBuffer();
+  bufferId = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
   gl.bufferData(gl.ARRAY_BUFFER, 8 * maxNumVertices, gl.STATIC_DRAW);
 
@@ -119,7 +120,7 @@ function main() {
   gl.enableVertexAttribArray(vPos);
 
   // Create buffer ,set buffer and copy data into a buffer for color
-  var cBufferId = gl.createBuffer();
+  cBufferId = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
   gl.bufferData(gl.ARRAY_BUFFER, 16 * maxNumVertices, gl.STATIC_DRAW);
 
@@ -127,6 +128,10 @@ function main() {
   gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vColor);
 
+  events();
+}
+
+function events() {
   let drawnObject = null;
 
   // listeners
@@ -188,6 +193,10 @@ function main() {
   // });
 
   render();
+}
+function main() {
+  var modelGL = new ModelGL();
+  init();
 }
 
 window.onload = main;

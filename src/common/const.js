@@ -1,30 +1,4 @@
 import { vec4 } from "../helpers/helper";
-/* Shader Const */
-
-//Vertex shader program
-var VSHADER_SOURCE = `
-  attribute vec4 vPosition;
-  attribute vec4 vColor;
-
-  varying vec4 fColor;
-
-  void
-  main()
-  {
-      gl_Position = vPosition;
-      fColor = vColor;
-  }`;
-
-// Fragment shader program
-var FSHADER_SOURCE = `
-  precision mediump float;
-  varying vec4 fColor;
-  void main() {
-    gl_FragColor = fColor;
-  }`;
-
-var offsetLoc;
-
 /* Main const*/
 
 var maxNumVertices = 200;
@@ -59,16 +33,13 @@ const features = [
   "move",
   "changeLine",
   "changeSquare",
-  "changePolygon"
-]
+  "changePolygon",
+];
 let featuresIndex = 0;
 
 let isDrawing = false;
 
 export {
-  VSHADER_SOURCE,
-  FSHADER_SOURCE,
-  offsetLoc,
   maxNumVertices,
   index,
   cindex,
