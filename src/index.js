@@ -11,9 +11,9 @@ import {
   features,
   shapes,
 } from "./common/const";
-import { eventPolygon } from "./event/polygon";
+import { render_polygon } from "./event/polygon";
 import { vec4, hex2dec } from "./helpers/helper";
-import { ModelGL } from "./master/webgl";
+import { ModelGL } from "./model/webgl";
 var gl;
 var canvas;
 var bufferId, cBufferId;
@@ -127,17 +127,13 @@ function events() {
   let drawnObject = null;
 
   // listeners
-  var m = document.getElementById("colorMenu");
-  m.addEventListener("click", function () {
-    cindex = m.selectedIndex;
-  });
 
   let f = document.getElementById("features-menu");
   f.addEventListener("click", () => {
     featuresIndex = f.selectedIndex;
   });
 
-  createButtonEventListener(modelGL);
+  //createButtonEventListener(modelGL);
 
   modelGL.canvas.addEventListener("mousemove", (e) => {
     const x = (2 * e.clientX) / modelGL.canvas.width - 1;
@@ -169,7 +165,7 @@ function events() {
 
   //Register function on mouse press
   modelGL.canvas.onmousedown = function (event) {
-    eventPolygon(event, modelGL);
+    render_polygon(event, modelGL);
     isDrawing = true;
     // TODO: add features listener here
     console.log("down");
@@ -190,6 +186,7 @@ function events() {
 
   render();
 }
+
 function main() {
   modelGL = new ModelGL();
   init();

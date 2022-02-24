@@ -2,7 +2,7 @@ class ModelGL {
   constructor() {
     this.gl;
     this.canvas;
-    this.index;
+    this.index = 0;
 
     this.chosen_color;
 

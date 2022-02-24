@@ -9,7 +9,7 @@ import {
   numIndices,
 } from "../common/const";
 
-function eventPolygon(event, modelGL) {
+function render_polygon(event, modelGL) {
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
   var t = vec2(
     (2 * event.clientX) / modelGL.canvas.width - 1,
@@ -22,9 +22,12 @@ function eventPolygon(event, modelGL) {
   );
 
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
-  console.log("WARNAAAAAAAAAAAAA");
-  console.log(modelGL.chosen_color);
-  t = vec4(colors[0]);
+
+  if (modelGL.chosen_color == undefined) {
+    modelGL.chosen_color = colors[0];
+  }
+
+  t = vec4(modelGL.chosen_color);
   modelGL.gl.bufferSubData(
     modelGL.gl.ARRAY_BUFFER,
     16 * modelGL.index,
@@ -33,4 +36,4 @@ function eventPolygon(event, modelGL) {
   modelGL.index++;
 }
 
-export { eventPolygon };
+export { render_polygon };
