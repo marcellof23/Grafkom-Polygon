@@ -2,7 +2,6 @@ import { vec4 } from "../helpers/helper";
 /* Main const*/
 
 var maxNumVertices = 200;
-var index = 0;
 
 var cindex = 0;
 
@@ -41,7 +40,6 @@ let isDrawing = false;
 
 export {
   maxNumVertices,
-  index,
   cindex,
   colors,
   t,

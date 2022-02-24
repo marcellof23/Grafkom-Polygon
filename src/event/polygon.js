@@ -1,7 +1,6 @@
 import { vec2, vec4, flatten } from "../helpers/helper";
 
 import {
-  index,
   cindex,
   colors,
   t,
@@ -23,6 +22,8 @@ function eventPolygon(event, modelGL) {
   );
 
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
+  console.log("WARNAAAAAAAAAAAAA");
+  console.log(modelGL.chosen_color);
   t = vec4(colors[0]);
   modelGL.gl.bufferSubData(
     modelGL.gl.ARRAY_BUFFER,

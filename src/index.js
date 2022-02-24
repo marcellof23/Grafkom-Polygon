@@ -1,7 +1,6 @@
 import _ from "lodash";
 import {
   maxNumVertices,
-  index,
   cindex,
   colors,
   numPolygons,
@@ -13,7 +12,7 @@ import {
   shapes,
 } from "./common/const";
 import { eventPolygon } from "./event/polygon";
-import { vec2, vec4, flatten } from "./helpers/helper";
+import { vec4, hex2dec } from "./helpers/helper";
 import { ModelGL } from "./master/webgl";
 var gl;
 var canvas;
@@ -177,6 +176,17 @@ function events() {
     // numIndices[numPolygons]++;
     // index++;
   };
+
+  var colorInput = document.getElementById("color-input");
+  colorInput.addEventListener("change", () => {
+    const color = colorInput.value;
+    modelGL.chosen_color = [
+      hex2dec(color.slice(1, 3)) / 255,
+      hex2dec(color.slice(3, 5)) / 255,
+      hex2dec(color.slice(5, 7)) / 255,
+      1.0,
+    ];
+  });
 
   render();
 }

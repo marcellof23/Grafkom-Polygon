@@ -4,6 +4,8 @@ class ModelGL {
     this.canvas;
     this.index;
 
+    this.chosen_color;
+
     this.bufferId;
     this.cBufferId;
 
