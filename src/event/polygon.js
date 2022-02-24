@@ -19,7 +19,7 @@ function eventPolygon(event, canvas, gl, cBufferId, bufferId) {
   gl.bufferSubData(gl.ARRAY_BUFFER, 8 * index, flatten(t));
 
   gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
-  t = vec4(colors[index % 7]);
+  t = vec4(colors[0]);
   gl.bufferSubData(gl.ARRAY_BUFFER, 16 * index, flatten(t));
   index++;
 }

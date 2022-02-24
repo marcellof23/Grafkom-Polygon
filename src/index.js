@@ -74,12 +74,12 @@ function draw() {
 }
 
 function render() {
-  // gl.clear(gl.COLOR_BUFFER_BIT);
-  // gl.drawArrays(gl.TRIANGLE_FAN, 0, index);
-  gl.viewport(0, 0, canvas.width, canvas.height);
-  gl.clearColor(0.8, 0.8, 0.8, 1.0);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  draw();
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.drawArrays(gl.TRIANGLE_FAN, 0, index);
+  // gl.viewport(0, 0, canvas.width, canvas.height);
+  // gl.clearColor(0.8, 0.8, 0.8, 1.0);
+  // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  // draw();
 
   window.requestAnimFrame(render);
 }
@@ -136,12 +136,6 @@ function main() {
 
   createButtonEventListener(gl);
 
-  canvas.addEventListener("mousedown", (e) => {
-    isDrawing = true;
-    // TODO: add features listener here
-    console.log("down");
-  });
-
   canvas.addEventListener("mousemove", (e) => {
     const x = (2 * e.clientX) / canvas.width - 1;
     const y = (2 * (canvas.height - e.clientY)) / canvas.height - 1;
@@ -165,15 +159,18 @@ function main() {
     }
     isDrawing = false;
     drawnObject = null;
+    console.log(shapes);
     console.log("up");
   });
 
   //Register function on mouse press
   canvas.onmousedown = function (event) {
     eventPolygon(event, canvas, gl, cBufferId, bufferId);
-
-    numIndices[numPolygons]++;
-    index++;
+    isDrawing = true;
+    // TODO: add features listener here
+    console.log("down");
+    // numIndices[numPolygons]++;
+    // index++;
   };
 
   // canvas.addEventListener("click", function (event) {
