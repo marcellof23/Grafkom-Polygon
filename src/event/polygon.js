@@ -10,17 +10,17 @@ import {
   numIndices,
 } from "../common/const";
 
-function eventPolygon(event, canvas, gl, cBufferId, bufferId) {
-  gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+function eventPolygon(event, modelGL) {
+  modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
   var t = vec2(
-    (2 * event.clientX) / canvas.width - 1,
-    (2 * (canvas.height - event.clientY)) / canvas.height - 1
+    (2 * event.clientX) / modelGL.canvas.width - 1,
+    (2 * (modelGL.canvas.height - event.clientY)) / modelGL.canvas.height - 1
   );
-  gl.bufferSubData(gl.ARRAY_BUFFER, 8 * index, flatten(t));
+  modelGL.gl.bufferSubData(modelGL.gl.ARRAY_BUFFER, 8 * index, flatten(t));
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
+  modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
   t = vec4(colors[0]);
-  gl.bufferSubData(gl.ARRAY_BUFFER, 16 * index, flatten(t));
+  modelGL.gl.bufferSubData(modelGL.gl.ARRAY_BUFFER, 16 * index, flatten(t));
   index++;
 }
 

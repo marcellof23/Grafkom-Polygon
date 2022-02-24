@@ -4,7 +4,7 @@ class ModelGL {
     this.canvas;
 
     this.bufferId;
-    this.cbufferId;
+    this.cBufferId;
 
     this.mouseClicked = false;
   }
@@ -13,3 +13,5 @@ class ModelGL {
     render(this);
   }
 }
+
+export { ModelGL };
