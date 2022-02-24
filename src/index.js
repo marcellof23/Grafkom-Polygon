@@ -1,19 +1,15 @@
 import _ from "lodash";
 import {
-  VSHADER_SOURCE,
-  FSHADER_SOURCE,
-  offsetLoc,
   maxNumVertices,
   index,
   cindex,
   colors,
-  t,
   numPolygons,
   numIndices,
   start,
 } from "./common/const";
 import { eventPolygon } from "./event/polygon";
-import { argsToArray, vec2, vec4, flatten } from "./helpers/helper";
+import { vec2, vec4, flatten } from "./helpers/helper";
 
 var gl;
 
@@ -58,14 +54,6 @@ function main() {
   gl.canvas.width = 0.7 * window.innerWidth;
   gl.canvas.height = window.innerHeight;
 
-  // Register function on mouse press
-  canvas.onmousedown = function (event) {
-    eventPolygon(event, canvas, gl, cBufferId, bufferId);
-
-    numIndices[numPolygons]++;
-    index++;
-  };
-
   // Set viewport
   gl.viewport(0, 0, canvas.width, canvas.height);
 
@@ -81,7 +69,7 @@ function main() {
 
   createMenuEventListener();
 
-  createButtonEventListener(gl);
+  //createButtonEventListener(gl);
 
   // Create buffer ,set buffer and copy data into a buffer for position
   var bufferId = gl.createBuffer();
@@ -101,19 +89,9 @@ function main() {
   gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vColor);
 
-  canvas.addEventListener("click", function (event) {
-    gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
-    var t = vec2(
-      (2 * event.clientX) / canvas.width - 1,
-      (2 * (canvas.height - event.clientY)) / canvas.height - 1
-    );
-    gl.bufferSubData(gl.ARRAY_BUFFER, 8 * index, flatten(t));
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
-    t = vec4(colors[index % 7]);
-    gl.bufferSubData(gl.ARRAY_BUFFER, 16 * index, flatten(t));
-    index++;
-  });
+  canvas.onmousedown = function (event) {
+    eventPolygon(event, canvas, gl, cBufferId, bufferId);
+  };
 
   render();
 }
