@@ -71,7 +71,7 @@ function render() {
 
 function main() {
   modelGL = new ModelGL();
-
+  modelGL.color_chosen = colors[0];
   // Retrieve  canvas element
   modelGL.canvas = document.getElementById("webgl");
   // Get the rendering context
@@ -124,17 +124,10 @@ function main() {
   let drawnObject = null;
 
   // listeners
-  var m = document.getElementById("colorMenu");
-  m.addEventListener("click", function () {
-    cindex = m.selectedIndex;
-  });
-
   let f = document.getElementById("features-menu");
   f.addEventListener("click", () => {
     featuresIndex = f.selectedIndex;
   });
-
-  createButtonEventListener(modelGL);
 
   modelGL.canvas.addEventListener("mousemove", (e) => {
     const x = (2 * e.clientX) / modelGL.canvas.width - 1;
@@ -177,12 +170,12 @@ function main() {
   var colorInput = document.getElementById("color-input");
   colorInput.addEventListener("change", () => {
     const color = colorInput.value;
-    modelGL.chosen_color = [
+    modelGL.chosen_color = vec4(
       hex2dec(color.slice(1, 3)) / 255,
       hex2dec(color.slice(3, 5)) / 255,
       hex2dec(color.slice(5, 7)) / 255,
-      1.0,
-    ];
+      1.0
+    );
   });
 
   render();

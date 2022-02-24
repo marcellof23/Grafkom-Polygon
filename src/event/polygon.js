@@ -1,13 +1,5 @@
+import { colors } from "../common/const";
 import { vec2, vec4, flatten } from "../helpers/helper";
-
-import {
-  cindex,
-  colors,
-  t,
-  numPolygons,
-  start,
-  numIndices,
-} from "../common/const";
 
 function eventPolygon(event, modelGL) {
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
@@ -22,9 +14,15 @@ function eventPolygon(event, modelGL) {
   );
 
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
+
+  if (modelGL.chosen_color == undefined) {
+    modelGL.chosen_color = colors[0];
+  }
+
   console.log("WARNAAAAAAAAAAAAA");
   console.log(modelGL.chosen_color);
-  t = vec4(colors[0]);
+
+  t = vec4(modelGL.color_chosen);
   modelGL.gl.bufferSubData(
     modelGL.gl.ARRAY_BUFFER,
     16 * modelGL.index,
