@@ -7,42 +7,10 @@ function initShaders(gl, vertexShaderId, fragmentShaderId) {
   var fragShdr;
 
   var vertElem = document.getElementById(vertexShaderId);
-  if (!vertElem) {
-    alert("Unable to load vertex shader " + vertexShaderId);
-    return -1;
-  } else {
-    vertShdr = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vertShdr, vertElem.text);
-    gl.compileShader(vertShdr);
-    if (!gl.getShaderParameter(vertShdr, gl.COMPILE_STATUS)) {
-      var msg =
-        "Vertex shader failed to compile.  The error log is:" +
-        "<pre>" +
-        gl.getShaderInfoLog(vertShdr) +
-        "</pre>";
-      alert(msg);
-      return -1;
-    }
-  }
-
   var fragElem = document.getElementById(fragmentShaderId);
-  if (!fragElem) {
-    alert("Unable to load vertex shader " + fragmentShaderId);
-    return -1;
-  } else {
-    fragShdr = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fragShdr, fragElem.text);
-    gl.compileShader(fragShdr);
-    if (!gl.getShaderParameter(fragShdr, gl.COMPILE_STATUS)) {
-      var msg =
-        "Fragment shader failed to compile.  The error log is:" +
-        "<pre>" +
-        gl.getShaderInfoLog(fragShdr) +
-        "</pre>";
-      alert(msg);
-      return -1;
-    }
-  }
+
+  vertShdr = buildShader(gl, vertElem.text, gl.VERTEX_SHADER);
+  fragShdr = buildShader(gl, fragElem.text, gl.FRAGMENT_SHADER);
 
   var program = gl.createProgram();
   gl.attachShader(program, vertShdr);
@@ -50,14 +18,20 @@ function initShaders(gl, vertexShaderId, fragmentShaderId) {
   gl.linkProgram(program);
 
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    var msg =
-      "Shader program failed to link.  The error log is:" +
-      "<pre>" +
-      gl.getProgramInfoLog(program) +
-      "</pre>";
-    alert(msg);
+    alert("Error compiling shader: " + gl.getShaderInfoLog(shader));
     return -1;
   }
 
   return program;
+}
+
+function buildShader(gl, src, type) {
+  var shader = gl.createShader(type);
+  gl.shaderSource(shader, src);
+  gl.compileShader(shader);
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    alert("Error while compiling shader: " + gl.getShaderInfoLog(shader));
+    return;
+  }
+  return shader;
 }
