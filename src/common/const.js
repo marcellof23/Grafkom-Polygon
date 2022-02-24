@@ -1,7 +1,7 @@
 import { vec4 } from "../helpers/helper";
 /* Main const*/
 
-var maxNumVertices = 200;
+var maxNumVertices = 20000;
 
 var cindex = 0;
 

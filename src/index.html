@@ -31,7 +31,6 @@
       gl_FragColor = fColor;
   }
   </script>
-  <script type="text/javascript" src="helpers/webgl-utils.js"></script>
   <script type="text/javascript" src="helpers/initShaders.js"></script>
   <script type="text/javascript" src="../dist/main.js"></script>
 
@@ -43,12 +42,36 @@
         </canvas>
     </div>
     <div class="flex-vertical">
-      <!-- TODO: jadiin input text untuk hex -->
-      <!-- Kalau udah ada yang megang fungsi hex convertr, langsung ubah ini aja -->
-      <div class="menu-item-cl">
-        <input id="color-input" type="color" value="#000000">
+      <div class="nav-1">
+        <button id="export-button" class="menu-item"> Export JSON </button>
+        <button id="import-button" class="menu-item" value="tes"> Import JSON</button>
+        <div>
+          Features:
+          <div>
+            <select name="menu-features" id="menu-features">
+              <option value="0">Line</option>
+              <option value="1">Square</option>
+              <option value="2">Rectangle</option>
+              <option value="3">Polygon</option>
+            </select>
+          </div>
+        </div>
       </div>
-      <button id = "Button1">End Polygon</button>
+      <div class="nav-2">
+        <div class="menu-item-cl">
+            Pick color for polygon : 
+            <input id="color-input" type="color" value="#000000">
+        </div>
+        <div class="menu-item">
+          <p style="margin-right: 20px;">What to change:</p>
+            <select name="menu-changes" id="menu-changes">
+              <option value="0">Line</option>
+              <option value="1">Square</option>
+              <option value="2">Polygon Point</option>
+              <option value="3">Polygon Color</option>
+            </select>
+        </div>
+      </div>
       <p>Features</p>
       <select name="features-menu" id="features-menu">
         <option value="0">Line</option>

@@ -14,24 +14,8 @@ import {
 import { render_polygon } from "./event/polygon";
 import { vec4, hex2dec } from "./helpers/helper";
 import { ModelGL } from "./model/webgl";
-var gl;
-var canvas;
-var bufferId, cBufferId;
+
 var modelGL;
-
-function createButtonEventListener() {
-  var a = document.getElementById("Button1");
-  a.addEventListener("click", function () {
-    numPolygons++;
-    numIndices[numPolygons] = 0;
-    start[numPolygons] = modelGL.index;
-    modelGL.gl.clear(modelGL.gl.COLOR_BUFFER_BIT);
-
-    for (var i = 0; i < numPolygons; i++) {
-      modelGL.gl.drawArrays(modelGL.gl.TRIANGLE_FAN, start[i], numIndices[i]);
-    }
-  });
-}
 
 function draw() {
   // draw tiap gambar tergantung tipenya
@@ -64,6 +48,7 @@ function draw() {
 
 function render() {
   modelGL.gl.clear(modelGL.gl.COLOR_BUFFER_BIT);
+
   modelGL.gl.drawArrays(modelGL.gl.TRIANGLE_FAN, 0, modelGL.index);
 
   window.requestAnimFrame(render);
@@ -112,7 +97,7 @@ function init() {
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
   modelGL.gl.bufferData(
     modelGL.gl.ARRAY_BUFFER,
-    16 * maxNumVertices,
+    8 * maxNumVertices,
     modelGL.gl.STATIC_DRAW
   );
 
@@ -127,13 +112,10 @@ function events() {
   let drawnObject = null;
 
   // listeners
-
   let f = document.getElementById("features-menu");
   f.addEventListener("click", () => {
     featuresIndex = f.selectedIndex;
   });
-
-  //createButtonEventListener(modelGL);
 
   modelGL.canvas.addEventListener("mousemove", (e) => {
     const x = (2 * e.clientX) / modelGL.canvas.width - 1;
@@ -164,14 +146,19 @@ function events() {
   });
 
   //Register function on mouse press
-  modelGL.canvas.onmousedown = function (event) {
-    render_polygon(event, modelGL);
+  modelGL.canvas.addEventListener("mousedown", (e) => {
+    render_polygon(e, modelGL);
+    modelGL.cur_poly.push((2 * e.offsetX) / modelGL.canvas.width - 1);
+    modelGL.cur_poly.push(
+      (2 * (modelGL.canvas.height - e.offsetY)) / modelGL.canvas.height - 1
+    );
+    modelGL.cur_n_poly += 1;
     isDrawing = true;
     // TODO: add features listener here
     console.log("down");
     // numIndices[numPolygons]++;
     // index++;
-  };
+  });
 
   var colorInput = document.getElementById("color-input");
   colorInput.addEventListener("change", () => {

@@ -33,6 +33,7 @@ function render_polygon(event, modelGL) {
     16 * modelGL.index,
     flatten(t)
   );
+
   modelGL.index++;
 }
 
