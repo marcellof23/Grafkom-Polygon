@@ -31,7 +31,7 @@ function createFeaturesMenuEventListener() {
 
   m.addEventListener("click", () => {
     featuresIndex = m.selectedIndex;
-  })
+  });
 }
 
 function createButtonEventListener(gl) {
@@ -56,15 +56,18 @@ function draw() {
       // console.log(shape)
       gl.bindBuffer(gl.ARRAY_BUFFER, pBuffer);
 
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(shape[1]), gl.STATIC_DRAW);
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(shape[1]),
+        gl.STATIC_DRAW
+      );
 
       const cBuffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
       t = vec4(colors[cindex]);
 
-      gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(t), gl.STATIC_DRAW)
-      
-      
+      gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(t), gl.STATIC_DRAW);
+
       gl.drawArrays(gl.LINES, 0, 2);
     }
   }
@@ -80,7 +83,6 @@ function render() {
 
   window.requestAnimFrame(render);
 }
-
 
 function main() {
   // Retrieve  canvas element
@@ -137,8 +139,8 @@ function main() {
   canvas.addEventListener("mousedown", (e) => {
     isDrawing = true;
     // TODO: add features listener here
-    console.log('down')
-  })
+    console.log("down");
+  });
 
   canvas.addEventListener("mousemove", (e) => {
     const x = (2 * e.clientX) / canvas.width - 1;
@@ -146,7 +148,7 @@ function main() {
     if (isDrawing) {
       if (features[featuresIndex] == "line") {
         if (!drawnObject) {
-          drawnObject = [ featuresIndex, vec4(x, y, x, y), cindex];
+          drawnObject = [featuresIndex, vec4(x, y, x, y), cindex];
         }
         console.log(drawnObject[1]);
         drawnObject[1].pop();
@@ -155,7 +157,7 @@ function main() {
       }
       // TODO: add conditional on others features
     }
-  })
+  });
 
   canvas.addEventListener("mouseup", (e) => {
     if (isDrawing) {
@@ -163,17 +165,17 @@ function main() {
     }
     isDrawing = false;
     drawnObject = null;
-    console.log('up')
-  })
+    console.log("up");
+  });
 
-  // Register function on mouse press
-  // canvas.onmousedown = function (event) {
-  //   eventPolygon(event, canvas, gl, cBufferId, bufferId);
+  //Register function on mouse press
+  canvas.onmousedown = function (event) {
+    eventPolygon(event, canvas, gl, cBufferId, bufferId);
 
-  //   numIndices[numPolygons]++;
-  //   index++;
-  // };
-  
+    numIndices[numPolygons]++;
+    index++;
+  };
+
   // canvas.addEventListener("click", function (event) {
   //   gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
   //   var t = vec2(
