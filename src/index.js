@@ -69,7 +69,9 @@ function render() {
   window.requestAnimFrame(render);
 }
 
-function init() {
+function main() {
+  modelGL = new ModelGL();
+
   // Retrieve  canvas element
   modelGL.canvas = document.getElementById("webgl");
   // Get the rendering context
@@ -119,11 +121,6 @@ function init() {
   var vColor = modelGL.gl.getAttribLocation(program, "vColor");
   modelGL.gl.vertexAttribPointer(vColor, 4, modelGL.gl.FLOAT, false, 0, 0);
   modelGL.gl.enableVertexAttribArray(vColor);
-
-  events(modelGL);
-}
-
-function events() {
   let drawnObject = null;
 
   // listeners
@@ -189,10 +186,6 @@ function events() {
   });
 
   render();
-}
-function main() {
-  modelGL = new ModelGL();
-  init();
 }
 
 window.onload = main;
