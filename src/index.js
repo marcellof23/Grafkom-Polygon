@@ -1,13 +1,9 @@
 import _ from "lodash";
 import {
-  VSHADER_SOURCE,
-  FSHADER_SOURCE,
-  offsetLoc,
   maxNumVertices,
   index,
   cindex,
   colors,
-  t,
   numPolygons,
   numIndices,
   start,
@@ -17,7 +13,7 @@ import {
   shapes,
 } from "./common/const";
 import { eventPolygon } from "./event/polygon";
-import { argsToArray, vec2, vec4, flatten } from "./helpers/helper";
+import { vec2, vec4, flatten } from "./helpers/helper";
 
 var gl;
 var canvas;
