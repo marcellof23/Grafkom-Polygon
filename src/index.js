@@ -188,7 +188,7 @@ function main() {
   //   index++;
   // });
 
-  render(canvas);
+  render();
 }
 
 window.onload = main;
