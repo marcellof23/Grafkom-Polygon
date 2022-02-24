@@ -2,6 +2,7 @@ class ModelGL {
   constructor() {
     this.gl;
     this.canvas;
+    this.index;
 
     this.bufferId;
     this.cBufferId;

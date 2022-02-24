@@ -20,28 +20,12 @@ var canvas;
 var bufferId, cBufferId;
 var modelGL;
 
-function createColorMenuEventListener() {
-  var m = document.getElementById("colorMenu");
-
-  m.addEventListener("click", function () {
-    cindex = m.selectedIndex;
-  });
-}
-
-function createFeaturesMenuEventListener() {
-  let m = document.getElementById("features-menu");
-
-  m.addEventListener("click", () => {
-    featuresIndex = m.selectedIndex;
-  });
-}
-
 function createButtonEventListener() {
   var a = document.getElementById("Button1");
   a.addEventListener("click", function () {
     numPolygons++;
     numIndices[numPolygons] = 0;
-    start[numPolygons] = index;
+    start[numPolygons] = modelGL.index;
     modelGL.gl.clear(modelGL.gl.COLOR_BUFFER_BIT);
 
     for (var i = 0; i < numPolygons; i++) {
@@ -81,7 +65,7 @@ function draw() {
 
 function render() {
   modelGL.gl.clear(modelGL.gl.COLOR_BUFFER_BIT);
-  modelGL.gl.drawArrays(modelGL.gl.TRIANGLE_FAN, 0, index);
+  modelGL.gl.drawArrays(modelGL.gl.TRIANGLE_FAN, 0, modelGL.index);
 
   window.requestAnimFrame(render);
 }
@@ -144,9 +128,15 @@ function events() {
   let drawnObject = null;
 
   // listeners
-  createColorMenuEventListener();
+  var m = document.getElementById("colorMenu");
+  m.addEventListener("click", function () {
+    cindex = m.selectedIndex;
+  });
 
-  createFeaturesMenuEventListener();
+  let f = document.getElementById("features-menu");
+  f.addEventListener("click", () => {
+    featuresIndex = f.selectedIndex;
+  });
 
   createButtonEventListener(modelGL);
 

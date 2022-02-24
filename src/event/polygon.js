@@ -16,12 +16,20 @@ function eventPolygon(event, modelGL) {
     (2 * event.clientX) / modelGL.canvas.width - 1,
     (2 * (modelGL.canvas.height - event.clientY)) / modelGL.canvas.height - 1
   );
-  modelGL.gl.bufferSubData(modelGL.gl.ARRAY_BUFFER, 8 * index, flatten(t));
+  modelGL.gl.bufferSubData(
+    modelGL.gl.ARRAY_BUFFER,
+    8 * modelGL.index,
+    flatten(t)
+  );
 
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
   t = vec4(colors[0]);
-  modelGL.gl.bufferSubData(modelGL.gl.ARRAY_BUFFER, 16 * index, flatten(t));
-  index++;
+  modelGL.gl.bufferSubData(
+    modelGL.gl.ARRAY_BUFFER,
+    16 * modelGL.index,
+    flatten(t)
+  );
+  modelGL.index++;
 }
 
 export { eventPolygon };
