@@ -60,7 +60,7 @@ function draw() {
 
       const cBuffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-      t = vec4(colors[cindex]);
+      let t = vec4(colors[cindex]);
 
       gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(t), gl.STATIC_DRAW)
       
