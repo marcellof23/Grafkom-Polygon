@@ -1,13 +1,6 @@
 import { vec2, vec4, flatten } from "../helpers/helper";
 
-import {
-  cindex,
-  colors,
-  t,
-  numPolygons,
-  start,
-  numIndices,
-} from "../common/const";
+import { cindex, colors, t, start, numIndices } from "../common/const";
 
 function render_polygon(event, modelGL) {
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
@@ -33,7 +26,8 @@ function render_polygon(event, modelGL) {
     16 * modelGL.index,
     flatten(t)
   );
-  modelGL.index++;
+
+  //modelGL.index++;
 }
 
 export { render_polygon };

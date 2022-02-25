@@ -3,7 +3,6 @@ import {
   maxNumVertices,
   cindex,
   colors,
-  numPolygons,
   numIndices,
   start,
   featuresIndex,
@@ -14,22 +13,26 @@ import {
 import { render_polygon } from "./event/polygon";
 import { vec4, hex2dec } from "./helpers/helper";
 import { ModelGL } from "./model/webgl";
-var gl;
-var canvas;
-var bufferId, cBufferId;
+
 var modelGL;
+var prevNumPolygons = 0;
 
 function createButtonEventListener() {
   var a = document.getElementById("Button1");
-  a.addEventListener("click", function () {
-    numPolygons++;
-    numIndices[numPolygons] = 0;
-    start[numPolygons] = modelGL.index;
-    modelGL.gl.clear(modelGL.gl.COLOR_BUFFER_BIT);
 
-    for (var i = 0; i < numPolygons; i++) {
-      modelGL.gl.drawArrays(modelGL.gl.TRIANGLE_FAN, start[i], numIndices[i]);
-    }
+  a.addEventListener("click", function () {
+    modelGL.gl.drawArrays(
+      modelGL.gl.TRIANGLE_FAN,
+      modelGL.start[modelGL.numPolygons],
+      modelGL.numIndices[modelGL.numPolygons]
+    );
+
+    console.log("oi");
+
+    prevNumPolygons = modelGL.numPolygons;
+    modelGL.numPolygons++;
+    modelGL.numIndices[modelGL.numPolygons] = 0;
+    modelGL.start[modelGL.numPolygons] = modelGL.index;
   });
 }
 
@@ -64,7 +67,20 @@ function draw() {
 
 function render() {
   modelGL.gl.clear(modelGL.gl.COLOR_BUFFER_BIT);
-  modelGL.gl.drawArrays(modelGL.gl.TRIANGLE_FAN, 0, modelGL.index);
+
+  modelGL.gl.drawArrays(
+    modelGL.gl.TRIANGLE_FAN,
+    modelGL.start[modelGL.numPolygons],
+    modelGL.numIndices[modelGL.numPolygons]
+  );
+
+  for (var i = 0; i < modelGL.numPolygons; i++) {
+    modelGL.gl.drawArrays(
+      modelGL.gl.TRIANGLE_FAN,
+      modelGL.start[i],
+      modelGL.numIndices[i]
+    );
+  }
 
   window.requestAnimFrame(render);
 }
@@ -99,7 +115,7 @@ function init() {
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
   modelGL.gl.bufferData(
     modelGL.gl.ARRAY_BUFFER,
-    8 * maxNumVertices,
+    maxNumVertices,
     modelGL.gl.STATIC_DRAW
   );
 
@@ -112,7 +128,7 @@ function init() {
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
   modelGL.gl.bufferData(
     modelGL.gl.ARRAY_BUFFER,
-    16 * maxNumVertices,
+    maxNumVertices,
     modelGL.gl.STATIC_DRAW
   );
 
@@ -120,20 +136,19 @@ function init() {
   modelGL.gl.vertexAttribPointer(vColor, 4, modelGL.gl.FLOAT, false, 0, 0);
   modelGL.gl.enableVertexAttribArray(vColor);
 
-  events(modelGL);
+  events();
 }
 
 function events() {
   let drawnObject = null;
 
   // listeners
-
   let f = document.getElementById("features-menu");
   f.addEventListener("click", () => {
     featuresIndex = f.selectedIndex;
   });
 
-  //createButtonEventListener(modelGL);
+  createButtonEventListener();
 
   modelGL.canvas.addEventListener("mousemove", (e) => {
     const x = (2 * e.clientX) / modelGL.canvas.width - 1;
@@ -164,14 +179,14 @@ function events() {
   });
 
   //Register function on mouse press
-  modelGL.canvas.onmousedown = function (event) {
-    render_polygon(event, modelGL);
+  modelGL.canvas.addEventListener("mousedown", (e) => {
+    render_polygon(e, modelGL);
     isDrawing = true;
     // TODO: add features listener here
     console.log("down");
-    // numIndices[numPolygons]++;
-    // index++;
-  };
+    modelGL.numIndices[modelGL.numPolygons]++;
+    modelGL.index++;
+  });
 
   var colorInput = document.getElementById("color-input");
   colorInput.addEventListener("change", () => {
