@@ -14,11 +14,6 @@ var colors = [
   vec4(1.0, 0.0, 1.0, 1.0), // magenta
   vec4(0.0, 1.0, 1.0, 1.0), // cyan
 ];
-var t;
-var numPolygons = 0;
-var numIndices = [];
-numIndices[0] = 0;
-var start = [0];
 
 // kayanya bakalan isi jenis shape, array shapenya, sama warnanya?
 // jenis shapenya kayanya refer ke array features index 0-3? jadi isinya angka
@@ -42,10 +37,6 @@ export {
   maxNumVertices,
   cindex,
   colors,
-  t,
-  numPolygons,
-  numIndices,
-  start,
   features,
   featuresIndex,
   shapes,

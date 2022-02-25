@@ -1,6 +1,6 @@
 import { vec2, vec4, flatten } from "../helpers/helper";
 
-import { cindex, colors, t, start, numIndices } from "../common/const";
+import { cindex, colors, start, numIndices } from "../common/const";
 
 function render_polygon(event, modelGL) {
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
@@ -8,9 +8,12 @@ function render_polygon(event, modelGL) {
     (2 * event.clientX) / modelGL.canvas.width - 1,
     (2 * (modelGL.canvas.height - event.clientY)) / modelGL.canvas.height - 1
   );
+
+  modelGL.last_pos = t;
+
   modelGL.gl.bufferSubData(
     modelGL.gl.ARRAY_BUFFER,
-    8 * modelGL.index,
+    8 * modelGL.polygon_idx,
     flatten(t)
   );
 
@@ -23,11 +26,9 @@ function render_polygon(event, modelGL) {
   t = vec4(modelGL.chosen_color);
   modelGL.gl.bufferSubData(
     modelGL.gl.ARRAY_BUFFER,
-    16 * modelGL.index,
+    16 * modelGL.polygon_idx,
     flatten(t)
   );
-
-  //modelGL.index++;
 }
 
 export { render_polygon };

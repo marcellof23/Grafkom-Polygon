@@ -43,10 +43,37 @@
         </canvas>
     </div>
     <div class="flex-vertical">
-      <!-- TODO: jadiin input text untuk hex -->
-      <!-- Kalau udah ada yang megang fungsi hex convertr, langsung ubah ini aja -->
-      <div class="menu-item-cl">
-        <input id="color-input" type="color" value="#000000">
+      <a id="download-link" style="display:none"></a>
+      <input style="display: none;" type="file" id="upload-button" value="Select Files"></input>
+      <div class="nav-1">
+        <button id="export-button" class="menu-item"> Export JSON </button>
+        <button id="import-button" class="menu-item" value="tes"> Import JSON</button>
+        <div>
+          <div class="feature-text">Features:</div>
+          <div>
+            <select name="menu-features" id="menu-features">
+              <option value="0">Line</option>
+              <option value="1">Square</option>
+              <option value="2">Rectangle</option>
+              <option value="3">Polygon</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="nav-2">
+        <div class="menu-item-cl">
+            Pick color to change current polygon : 
+            <input id="color-input" type="color" value="#000000">
+        </div>
+        <div class="menu-item">
+          <div class="feature-text">What to change:</div>
+            <select name="menu-changes" id="menu-changes">
+              <option value="0">Line</option>
+              <option value="1">Square</option>
+              <option value="2">Polygon Point</option>
+              <option value="3">Polygon Color</option>
+            </select>
+        </div>
       </div>
       <button id = "Button1">End Polygon</button>
       <p>Features</p>

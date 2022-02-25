@@ -63,8 +63,8 @@ function flatten(v) {
   return floats;
 }
 
-function hex2dec(n) {
+function hexTodec(n) {
   return parseInt(n, 16).toString(10);
 }
 
-export { argsToArray, vec2, vec4, flatten, hex2dec };
+export { argsToArray, vec2, vec4, flatten, hexTodec };

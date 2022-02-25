@@ -165,7 +165,7 @@ window.requestAnimFrame = (function () {
       /* function FrameRequestCallback */ callback,
       /* DOMElement Element */ element
     ) {
-      window.setTimeout(callback, 120000 / 60);
+      window.setTimeout(callback, 2000 / 60);
     }
   );
 })();

@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _, { fromPairs } from "lodash";
 import {
   maxNumVertices,
   cindex,
@@ -11,11 +11,10 @@ import {
   shapes,
 } from "./common/const";
 import { render_polygon } from "./event/polygon";
-import { vec4, hex2dec } from "./helpers/helper";
+import { vec2, vec4, hexTodec, flatten } from "./helpers/helper";
 import { ModelGL } from "./model/webgl";
 
 var modelGL;
-var prevNumPolygons = 0;
 
 function createButtonEventListener() {
   var a = document.getElementById("Button1");
@@ -27,12 +26,9 @@ function createButtonEventListener() {
       modelGL.numIndices[modelGL.numPolygons]
     );
 
-    console.log("oi");
-
-    prevNumPolygons = modelGL.numPolygons;
     modelGL.numPolygons++;
     modelGL.numIndices[modelGL.numPolygons] = 0;
-    modelGL.start[modelGL.numPolygons] = modelGL.index;
+    modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
   });
 }
 
@@ -184,19 +180,78 @@ function events() {
     isDrawing = true;
     // TODO: add features listener here
     console.log("down");
+    var t = vec2(
+      (2 * e.clientX) / modelGL.canvas.width - 1,
+      (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
+    );
+    modelGL.poly_pos.push(flatten(t));
+    t = vec4(modelGL.chosen_color);
+    modelGL.poly_col.push(flatten(t));
+    console.log(modelGL.poly_pos);
+    console.log(modelGL.polygon_idx);
     modelGL.numIndices[modelGL.numPolygons]++;
-    modelGL.index++;
+    modelGL.polygon_idx++;
   });
 
   var colorInput = document.getElementById("color-input");
   colorInput.addEventListener("change", () => {
     const color = colorInput.value;
     modelGL.chosen_color = [
-      hex2dec(color.slice(1, 3)) / 255,
-      hex2dec(color.slice(3, 5)) / 255,
-      hex2dec(color.slice(5, 7)) / 255,
+      hexTodec(color.slice(1, 3)) / 255,
+      hexTodec(color.slice(3, 5)) / 255,
+      hexTodec(color.slice(5, 7)) / 255,
       1.0,
     ];
+
+    modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
+    var offSet = modelGL.polygon_idx - modelGL.numIndices[modelGL.numPolygons];
+    for (var idx = 0; idx < modelGL.numIndices[modelGL.numPolygons]; idx++) {
+      modelGL.gl.bufferSubData(
+        modelGL.gl.ARRAY_BUFFER,
+        (offSet + idx) * 16,
+        new Float32Array([
+          modelGL.chosen_color[0],
+          modelGL.chosen_color[1],
+          modelGL.chosen_color[2],
+          modelGL.chosen_color[3],
+        ])
+      );
+    }
+  });
+
+  let formatJSONPrefix = "data:text/json;charset=utf-8,";
+  const exportBtn = document.getElementById("export-button");
+  exportBtn.addEventListener("click", () => {
+    var string_data =
+      formatJSONPrefix + encodeURIComponent(JSON.stringify(modelGL));
+    var download_button = document.getElementById("download-link");
+    download_button.setAttribute("href", string_data);
+    download_button.setAttribute("download", "data.json");
+    download_button.click();
+  });
+
+  const importBtn = document.getElementById("import-button");
+  importBtn.addEventListener("click", () => {
+    if (window.FileList && window.FileReader && window.File) {
+      uploadBtn.click();
+    } else {
+      alert("file upload not supported by your browser!");
+    }
+  });
+
+  const uploadBtn = document.getElementById("upload-button");
+  uploadBtn.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    const read_file = new FileReader();
+    read_file.addEventListener("load", (e) => {
+      try {
+        var data = JSON.parse(e.target.result);
+      } catch (err) {
+        alert(`invalid json file\n${err}`);
+      }
+      modelGL.loadJSONData(data);
+    });
+    read_file.readAsText(file);
   });
 
   render();
