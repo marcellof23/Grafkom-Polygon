@@ -55,8 +55,6 @@ function draw() {
         new Uint8Array(t),
         modelGL.gl.STATIC_DRAW
       );
-
-      modelGL.gl.drawArrays(modelGL.gl.LINES, 0, 2);
     }
   }
 }
@@ -163,7 +161,6 @@ function events() {
       // TODO: add conditional on others features
     }
   });
-
   modelGL.canvas.addEventListener("mouseup", (e) => {
     if (isDrawing) {
       shapes.push(drawnObject);
@@ -229,7 +226,6 @@ function events() {
     download_button.setAttribute("download", "data.json");
     download_button.click();
   });
-
   const importBtn = document.getElementById("import-button");
   importBtn.addEventListener("click", () => {
     if (window.FileList && window.FileReader && window.File) {
@@ -240,16 +236,52 @@ function events() {
   });
 
   const uploadBtn = document.getElementById("upload-button");
-  uploadBtn.addEventListener("change", (e) => {
+  uploadBtn.addEventListener("change", async (e) => {
     const file = e.target.files[0];
     const read_file = new FileReader();
-    read_file.addEventListener("load", (e) => {
+    read_file.addEventListener("load", async (e) => {
       try {
-        var data = JSON.parse(e.target.result);
+        var data = await JSON.parse(e.target.result);
+        if (data) {
+          modelGL.loadJSONData(data);
+          console.log(modelGL);
+          modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
+          for (
+            var idx = 0;
+            idx < modelGL.numIndices[modelGL.numPolygons];
+            idx++
+          ) {
+            modelGL.gl.bufferSubData(
+              modelGL.gl.ARRAY_BUFFER,
+              idx * 8,
+              new Float32Array([
+                modelGL.poly_pos[idx][0],
+                modelGL.poly_pos[idx][1],
+              ])
+            );
+          }
+
+          modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
+          for (
+            var idx = 0;
+            idx < modelGL.numIndices[modelGL.numPolygons];
+            idx++
+          ) {
+            modelGL.gl.bufferSubData(
+              modelGL.gl.ARRAY_BUFFER,
+              idx * 16,
+              new Float32Array([
+                modelGL.poly_col[idx][0],
+                modelGL.poly_col[idx][1],
+                modelGL.poly_col[idx][2],
+                modelGL.poly_col[idx][3],
+              ])
+            );
+          }
+        }
       } catch (err) {
         alert(`invalid json file\n${err}`);
       }
-      modelGL.loadJSONData(data);
     });
     read_file.readAsText(file);
   });

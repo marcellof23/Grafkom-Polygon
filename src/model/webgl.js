@@ -27,10 +27,12 @@ class ModelGL {
 
     // Polygon
     this.numPolygons = data.numPolygons;
+
     this.numIndices = data.numIndices;
     this.start = data.start;
     this.last_pos = data.last_pos;
     this.poly_pos = data.poly_pos;
+    this.poly_col = data.poly_col;
 
     this.mouseClicked = false;
   }
