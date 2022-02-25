@@ -20,7 +20,7 @@ class ModelGL {
     this.mouseClicked = false;
   }
 
-  loadJSONData(data) {
+  load_data(data) {
     this.polygon_idx = data.polygon_idx;
 
     this.chosen_color = data.chosen_color;

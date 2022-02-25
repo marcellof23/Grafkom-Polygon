@@ -243,7 +243,7 @@ function events() {
       try {
         var data = await JSON.parse(e.target.result);
         if (data) {
-          modelGL.loadJSONData(data);
+          modelGL.load_data(data);
           console.log(modelGL);
           modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
           for (
