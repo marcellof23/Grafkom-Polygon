@@ -6,7 +6,7 @@ function render_line(modelGL) {
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
   let line = createLine(modelGL.line_start, modelGL.line_end);
   console.log(vec2(line[0], line[1]));
-  for (let i = 0; i < 4; i += 2) {
+  for (let i = 0; i < 4; i++) {
     modelGL.gl.bufferSubData(
       modelGL.gl.ARRAY_BUFFER,
       8 * (i / 2),
