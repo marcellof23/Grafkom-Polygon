@@ -17,6 +17,11 @@ class ModelGL {
     this.poly_pos = [];
     this.poly_col = [];
 
+    // Line
+    this.line_start = [];
+    this.line_end = [];
+    this.lines = [];
+
     this.mouseClicked = false;
   }
 

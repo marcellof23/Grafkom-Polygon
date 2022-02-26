@@ -11,7 +11,7 @@ import {
   shapes,
 } from "./common/const";
 import { render_polygon } from "./event/polygon";
-import { vec2, vec4, hexTodec, flatten } from "./helpers/helper";
+import { vec2, vec4, hexTodec, flatten, createLine } from "./helpers/helper";
 import { ModelGL } from "./model/webgl";
 
 var modelGL;
@@ -32,49 +32,45 @@ function createButtonEventListener() {
   });
 }
 
-function draw() {
-  // draw tiap gambar tergantung tipenya
-  for (const shape of shapes) {
-    if (shape[0] === 0) {
-      const pBuffer = modelGL.gl.createBuffer();
-      // console.log(shape)
-      modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, pBuffer);
-
-      modelGL.gl.bufferData(
-        modelGL.gl.ARRAY_BUFFER,
-        new Float32Array(shape[1]),
-        modelGL.gl.STATIC_DRAW
-      );
-
-      const cBuffer = modelGL.gl.createBuffer();
-      modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, cBuffer);
-      let t = vec4(colors[cindex]);
-
-      modelGL.gl.bufferData(
-        modelGL.gl.ARRAY_BUFFER,
-        new Uint8Array(t),
-        modelGL.gl.STATIC_DRAW
-      );
-    }
+function draw(modelGL) {
+  if (!modelGL) return;
+  modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
+  let count_lines = modelGL.lines.length;
+  for (let i = 0 ; i < count_lines; i++) {
+    modelGL.gl.bufferSubData(
+      modelGL.gl.ARRAY_BUFFER,
+      32 * i,
+      new Float32Array(modelGL.lines[i])  
+    )
   }
+  if (modelGL.line_start.length !== 0) {
+    modelGL.gl.bufferSubData(
+      modelGL.gl.ARRAY_BUFFER,
+      32 * count_lines,
+      new Float32Array(createLine(modelGL.line_start, modelGL.line_end))
+    )
+    count_lines++;
+  }
+  for (let i = 0; i < count_lines; i++ ) modelGL.gl.drawArrays(modelGL.gl.TRIANGLE_FAN, 4 * i, 4);
 }
 
 function render() {
   modelGL.gl.clear(modelGL.gl.COLOR_BUFFER_BIT);
+  draw(modelGL);
 
-  modelGL.gl.drawArrays(
-    modelGL.gl.TRIANGLE_FAN,
-    modelGL.start[modelGL.numPolygons],
-    modelGL.numIndices[modelGL.numPolygons]
-  );
+  // modelGL.gl.drawArrays(
+  //   modelGL.gl.TRIANGLE_FAN,
+  //   modelGL.start[modelGL.numPolygons],
+  //   modelGL.numIndices[modelGL.numPolygons]
+  // );
 
-  for (var i = 0; i < modelGL.numPolygons; i++) {
-    modelGL.gl.drawArrays(
-      modelGL.gl.TRIANGLE_FAN,
-      modelGL.start[i],
-      modelGL.numIndices[i]
-    );
-  }
+  // for (var i = 0; i <= modelGL.numPolygons; i++) {
+  //   modelGL.gl.drawArrays(
+  //     modelGL.gl.TRIANGLE_FAN,
+  //     modelGL.start[i],
+  //     modelGL.numIndices[i]
+  //   );
+  // }
 
   window.requestAnimFrame(render);
 }
@@ -149,31 +145,37 @@ function events() {
     const y =
       (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1;
     if (isDrawing) {
-      if (features[featuresIndex] == "line") {
-        if (!drawnObject) {
-          drawnObject = [featuresIndex, vec4(x, y, x, y), modelGL.cindex];
-        }
-        console.log(drawnObject[1]);
-        drawnObject[1].pop();
-        drawnObject[1].pop();
-        drawnObject[1].push(x, y);
-      }
+      // if (features[featuresIndex] == "line") {
+      //   if (!drawnObject) {
+      //     drawnObject = [featuresIndex, vec4(x, y, x, y)];
+      //   }
+      //   console.log(drawnObject[1]);
+      //   drawnObject[1].pop();
+      //   drawnObject[1].pop();
+      //   drawnObject[1].push(x, y);
+      // }
+      modelGL.line_end = vec2(x,y);
       // TODO: add conditional on others features
     }
   });
   modelGL.canvas.addEventListener("mouseup", (e) => {
     if (isDrawing) {
-      shapes.push(drawnObject);
+      modelGL.lines.push(createLine(modelGL.line_start, modelGL.line_end));
     }
     isDrawing = false;
+    modelGL.line_start = [];
+    modelGL.line_end = [];
     drawnObject = null;
-    console.log(shapes);
+    // console.log(shapes);
+    console.log(modelGL.lines);
     console.log("up");
+    modelGL.index++;
+    // draw();
   });
 
   //Register function on mouse press
   modelGL.canvas.addEventListener("mousedown", (e) => {
-    render_polygon(e, modelGL);
+    // render_polygon(e, modelGL);
     isDrawing = true;
     // TODO: add features listener here
     console.log("down");
@@ -181,13 +183,15 @@ function events() {
       (2 * e.clientX) / modelGL.canvas.width - 1,
       (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
     );
-    modelGL.poly_pos.push(flatten(t));
-    t = vec4(modelGL.chosen_color);
-    modelGL.poly_col.push(flatten(t));
-    console.log(modelGL.poly_pos);
-    console.log(modelGL.polygon_idx);
-    modelGL.numIndices[modelGL.numPolygons]++;
-    modelGL.polygon_idx++;
+    modelGL.line_start = t;
+    modelGL.line_end = t;
+    // modelGL.poly_pos.push(flatten(t));
+    // t = vec4(modelGL.chosen_color);
+    // modelGL.poly_col.push(flatten(t));
+    // console.log(modelGL.poly_pos);
+    // console.log(modelGL.polygon_idx);
+    // modelGL.numIndices[modelGL.numPolygons]++;
+    // modelGL.polygon_idx++;
   });
 
   var colorInput = document.getElementById("color-input");
@@ -285,8 +289,9 @@ function events() {
     });
     read_file.readAsText(file);
   });
-
+  
   render();
+  // draw();
 }
 
 function main() {
