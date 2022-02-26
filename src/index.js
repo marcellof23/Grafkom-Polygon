@@ -18,14 +18,7 @@ var modelGL;
 
 function createButtonEventListener() {
   var a = document.getElementById("Button1");
-
   a.addEventListener("click", function () {
-    modelGL.gl.drawArrays(
-      modelGL.gl.TRIANGLE_FAN,
-      modelGL.start[modelGL.numPolygons],
-      modelGL.numIndices[modelGL.numPolygons]
-    );
-
     modelGL.numPolygons++;
     modelGL.numIndices[modelGL.numPolygons] = 0;
     modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
@@ -61,14 +54,7 @@ function draw() {
 
 function render() {
   modelGL.gl.clear(modelGL.gl.COLOR_BUFFER_BIT);
-
-  modelGL.gl.drawArrays(
-    modelGL.gl.TRIANGLE_FAN,
-    modelGL.start[modelGL.numPolygons],
-    modelGL.numIndices[modelGL.numPolygons]
-  );
-
-  for (var i = 0; i < modelGL.numPolygons; i++) {
+  for (var i = 0; i <= modelGL.numPolygons; i++) {
     modelGL.gl.drawArrays(
       modelGL.gl.TRIANGLE_FAN,
       modelGL.start[i],
@@ -135,11 +121,16 @@ function init() {
 
 function events() {
   let drawnObject = null;
-
+  var menu_features_idx = 0;
   // listeners
   let f = document.getElementById("features-menu");
   f.addEventListener("click", () => {
     featuresIndex = f.selectedIndex;
+  });
+
+  let mf = document.getElementById("menu-features");
+  mf.addEventListener("click", () => {
+    menu_features_idx = mf.selectedIndex;
   });
 
   createButtonEventListener();
@@ -173,21 +164,18 @@ function events() {
 
   //Register function on mouse press
   modelGL.canvas.addEventListener("mousedown", (e) => {
-    render_polygon(e, modelGL);
-    isDrawing = true;
-    // TODO: add features listener here
     console.log("down");
-    var t = vec2(
-      (2 * e.clientX) / modelGL.canvas.width - 1,
-      (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
-    );
-    modelGL.poly_pos.push(flatten(t));
-    t = vec4(modelGL.chosen_color);
-    modelGL.poly_col.push(flatten(t));
-    console.log(modelGL.poly_pos);
-    console.log(modelGL.polygon_idx);
-    modelGL.numIndices[modelGL.numPolygons]++;
-    modelGL.polygon_idx++;
+    isDrawing = true;
+
+    console.log(modelGL.start);
+    if (menu_features_idx == 2) {
+    }
+
+    if (menu_features_idx == 3) {
+      render_polygon(e, modelGL);
+      modelGL.numIndices[modelGL.numPolygons]++;
+      modelGL.polygon_idx++;
+    }
   });
 
   var colorInput = document.getElementById("color-input");
@@ -244,40 +232,7 @@ function events() {
         var data = await JSON.parse(e.target.result);
         if (data) {
           modelGL.load_data(data);
-          console.log(modelGL);
-          modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
-          for (
-            var idx = 0;
-            idx < modelGL.numIndices[modelGL.numPolygons];
-            idx++
-          ) {
-            modelGL.gl.bufferSubData(
-              modelGL.gl.ARRAY_BUFFER,
-              idx * 8,
-              new Float32Array([
-                modelGL.poly_pos[idx][0],
-                modelGL.poly_pos[idx][1],
-              ])
-            );
-          }
-
-          modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
-          for (
-            var idx = 0;
-            idx < modelGL.numIndices[modelGL.numPolygons];
-            idx++
-          ) {
-            modelGL.gl.bufferSubData(
-              modelGL.gl.ARRAY_BUFFER,
-              idx * 16,
-              new Float32Array([
-                modelGL.poly_col[idx][0],
-                modelGL.poly_col[idx][1],
-                modelGL.poly_col[idx][2],
-                modelGL.poly_col[idx][3],
-              ])
-            );
-          }
+          load_data(modelGL);
         }
       } catch (err) {
         alert(`invalid json file\n${err}`);
@@ -289,6 +244,31 @@ function events() {
   render();
 }
 
+function load_data(modelGL) {
+  console.log(modelGL);
+  modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
+  for (var idx = 0; idx < modelGL.numIndices[modelGL.numPolygons]; idx++) {
+    modelGL.gl.bufferSubData(
+      modelGL.gl.ARRAY_BUFFER,
+      idx * 8,
+      new Float32Array([modelGL.poly_pos[idx][0], modelGL.poly_pos[idx][1]])
+    );
+  }
+
+  modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
+  for (var idx = 0; idx < modelGL.numIndices[modelGL.numPolygons]; idx++) {
+    modelGL.gl.bufferSubData(
+      modelGL.gl.ARRAY_BUFFER,
+      idx * 16,
+      new Float32Array([
+        modelGL.poly_col[idx][0],
+        modelGL.poly_col[idx][1],
+        modelGL.poly_col[idx][2],
+        modelGL.poly_col[idx][3],
+      ])
+    );
+  }
+}
 function main() {
   modelGL = new ModelGL();
   init();
