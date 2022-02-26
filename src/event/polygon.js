@@ -9,8 +9,6 @@ function render_polygon(event, modelGL) {
     (2 * (modelGL.canvas.height - event.clientY)) / modelGL.canvas.height - 1
   );
 
-  modelGL.last_pos = t;
-
   modelGL.gl.bufferSubData(
     modelGL.gl.ARRAY_BUFFER,
     8 * modelGL.polygon_idx,

@@ -116,6 +116,14 @@ function init() {
   modelGL.gl.vertexAttribPointer(vColor, 4, modelGL.gl.FLOAT, false, 0, 0);
   modelGL.gl.enableVertexAttribArray(vColor);
 
+  modelGL.lineBufferId = modelGL.gl.createBuffer();
+  modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.lineBufferId);
+  modelGL.gl.bufferData(
+    modelGL.gl.ARRAY_BUFFER,
+    maxNumVertices,
+    modelGL.gl.STATIC_DRAW
+  );
+
   events();
 }
 
@@ -131,6 +139,9 @@ function events() {
   let mf = document.getElementById("menu-features");
   mf.addEventListener("click", () => {
     menu_features_idx = mf.selectedIndex;
+    modelGL.numPolygons++;
+    modelGL.numIndices[modelGL.numPolygons] = 0;
+    modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
   });
 
   createButtonEventListener();
@@ -168,9 +179,15 @@ function events() {
     isDrawing = true;
 
     console.log(modelGL.start);
-    if (menu_features_idx == 2) {
+    if (menu_features_idx == 0) {
+      modelGL.polygon_idx++;
     }
-
+    if (menu_features_idx == 1) {
+      modelGL.polygon_idx++;
+    }
+    if (menu_features_idx == 2) {
+      modelGL.polygon_idx++;
+    }
     if (menu_features_idx == 3) {
       render_polygon(e, modelGL);
       modelGL.numIndices[modelGL.numPolygons]++;
@@ -232,6 +249,39 @@ function events() {
         var data = await JSON.parse(e.target.result);
         if (data) {
           modelGL.load_data(data);
+          modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
+          for (
+            var idx = 0;
+            idx < modelGL.numIndices[modelGL.numPolygons];
+            idx++
+          ) {
+            modelGL.gl.bufferSubData(
+              modelGL.gl.ARRAY_BUFFER,
+              idx * 8,
+              new Float32Array([
+                modelGL.poly_pos[idx][0],
+                modelGL.poly_pos[idx][1],
+              ])
+            );
+          }
+
+          modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
+          for (
+            var idx = 0;
+            idx < modelGL.numIndices[modelGL.numPolygons];
+            idx++
+          ) {
+            modelGL.gl.bufferSubData(
+              modelGL.gl.ARRAY_BUFFER,
+              idx * 16,
+              new Float32Array([
+                modelGL.poly_col[idx][0],
+                modelGL.poly_col[idx][1],
+                modelGL.poly_col[idx][2],
+                modelGL.poly_col[idx][3],
+              ])
+            );
+          }
           load_data(modelGL);
         }
       } catch (err) {
@@ -244,31 +294,6 @@ function events() {
   render();
 }
 
-function load_data(modelGL) {
-  console.log(modelGL);
-  modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
-  for (var idx = 0; idx < modelGL.numIndices[modelGL.numPolygons]; idx++) {
-    modelGL.gl.bufferSubData(
-      modelGL.gl.ARRAY_BUFFER,
-      idx * 8,
-      new Float32Array([modelGL.poly_pos[idx][0], modelGL.poly_pos[idx][1]])
-    );
-  }
-
-  modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
-  for (var idx = 0; idx < modelGL.numIndices[modelGL.numPolygons]; idx++) {
-    modelGL.gl.bufferSubData(
-      modelGL.gl.ARRAY_BUFFER,
-      idx * 16,
-      new Float32Array([
-        modelGL.poly_col[idx][0],
-        modelGL.poly_col[idx][1],
-        modelGL.poly_col[idx][2],
-        modelGL.poly_col[idx][3],
-      ])
-    );
-  }
-}
 function main() {
   modelGL = new ModelGL();
   init();
