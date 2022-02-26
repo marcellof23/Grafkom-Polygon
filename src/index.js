@@ -131,14 +131,18 @@ function events() {
         modelGL.poly_pos.push(flatten(vec2(line[i * 2], line[i * 2 + 1])));
       }
 
+      for (let i = 0; i < 4; i++) {
+        modelGL.poly_col.push(colors[0]);
+      }
+
       modelGL.line_start = [];
       modelGL.line_end = [];
     }
-    if (featuresIndex == 1) {
+    if (menu_features_idx == 1) {
     }
-    if (featuresIndex == 2) {
+    if (menu_features_idx == 2) {
     }
-    if (featuresIndex == 3) {
+    if (menu_features_idx == 3) {
     }
     isDrawing = false;
     drawnObject = null;
@@ -212,6 +216,9 @@ function events() {
   let formatJSONPrefix = "data:text/json;charset=utf-8,";
   const exportBtn = document.getElementById("export-button");
   exportBtn.addEventListener("click", () => {
+    if (menu_features_idx == 3) {
+      modelGL.numPolygons++;
+    }
     var string_data =
       formatJSONPrefix + encodeURIComponent(JSON.stringify(modelGL));
     var download_button = document.getElementById("download-link");
@@ -257,7 +264,7 @@ function render_data(modelGL) {
       console.log(modelGL.start[nump] * 8 + idx * 8);
       modelGL.gl.bufferSubData(
         modelGL.gl.ARRAY_BUFFER,
-        modelGL.start[nump] * 8 + idx * 8,
+        (modelGL.start[nump] + idx) * 8,
         new Float32Array([
           modelGL.poly_pos[modelGL.start[nump] + idx][0],
           modelGL.poly_pos[modelGL.start[nump] + idx][1],
@@ -268,11 +275,12 @@ function render_data(modelGL) {
 
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
   for (var nump = 0; nump < modelGL.numIndices.length; nump++) {
+    console.log(nump);
     for (var idx = 0; idx < modelGL.numIndices[nump]; idx++) {
       console.log(modelGL.start[nump] * 16 + idx * 16);
       modelGL.gl.bufferSubData(
         modelGL.gl.ARRAY_BUFFER,
-        modelGL.start[nump] * 16 + idx * 16,
+        (modelGL.start[nump] + idx) * 16,
         new Float32Array([
           modelGL.poly_col[modelGL.start[nump] + idx][0],
           modelGL.poly_col[modelGL.start[nump] + idx][1],
