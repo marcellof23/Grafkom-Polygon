@@ -35,6 +35,7 @@ function render() {
       modelGL.start[i],
       modelGL.numIndices[i]
     );
+    console.log(modelGL.start[i], modelGL.numIndices[i]);
   }
 
   window.requestAnimFrame(render);

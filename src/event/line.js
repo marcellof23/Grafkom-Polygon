@@ -9,8 +9,8 @@ function render_line(modelGL) {
   for (let i = 0; i < 4; i++) {
     modelGL.gl.bufferSubData(
       modelGL.gl.ARRAY_BUFFER,
-      8 * (i / 2),
-      flatten(vec2(line[i], line[i + 1]))
+      8 * i,
+      flatten(vec2(line[i * 2], line[i * 2 + 1]))
     );
   }
 
