@@ -29,34 +29,35 @@ function draw(modelGL) {
   if (!modelGL) return;
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
   let count_lines = modelGL.lines.length;
-  for (let i = 0 ; i < count_lines; i++) {
+  for (let i = 0; i < count_lines; i++) {
     modelGL.gl.bufferSubData(
       modelGL.gl.ARRAY_BUFFER,
       32 * i,
-      new Float32Array(modelGL.lines[i])  
-    )
+      new Float32Array(modelGL.lines[i])
+    );
   }
   if (modelGL.line_start.length !== 0) {
     modelGL.gl.bufferSubData(
       modelGL.gl.ARRAY_BUFFER,
       32 * count_lines,
       new Float32Array(createLine(modelGL.line_start, modelGL.line_end))
-    )
+    );
     count_lines++;
   }
-  for (let i = 0; i < count_lines; i++ ) modelGL.gl.drawArrays(modelGL.gl.TRIANGLE_FAN, 4 * i, 4);
+  for (let i = 0; i < count_lines; i++)
+    modelGL.gl.drawArrays(modelGL.gl.TRIANGLE_FAN, 4 * i, 4);
 }
 
 function render() {
   modelGL.gl.clear(modelGL.gl.COLOR_BUFFER_BIT);
   draw(modelGL);
-  // for (var i = 0; i <= modelGL.numPolygons; i++) {
-  //   modelGL.gl.drawArrays(
-  //     modelGL.gl.TRIANGLE_FAN,
-  //     modelGL.start[i],
-  //     modelGL.numIndices[i]
-  //   );
-  // }
+  for (var i = 0; i <= modelGL.numPolygons; i++) {
+    modelGL.gl.drawArrays(
+      modelGL.gl.TRIANGLE_FAN,
+      modelGL.start[i],
+      modelGL.numIndices[i]
+    );
+  }
 
   window.requestAnimFrame(render);
 }
@@ -123,20 +124,20 @@ function events() {
     featuresIndex = f.selectedIndex;
     if (modelGL.numIndices[modelGL.numPolygons] > 2) {
       modelGL.numPolygons++;
-      modelGL.numIndices[modelGL.numPolygons] = 0;
-      modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
     }
+    modelGL.numIndices[modelGL.numPolygons] = 0;
+    modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
   });
 
-  let mf = document.getElementById("menu-features");
-  mf.addEventListener("click", () => {
-    menu_features_idx = mf.selectedIndex;
-    if (modelGL.numIndices[modelGL.numPolygons] > 2) {
-      modelGL.numPolygons++;
-      modelGL.numIndices[modelGL.numPolygons] = 0;
-      modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
-    }
-  });
+  // let mf = document.getElementById("menu-features");
+  // mf.addEventListener("click", () => {
+  //   menu_features_idx = mf.selectedIndex;
+  //   if (modelGL.numIndices[modelGL.numPolygons] > 2) {
+  //     modelGL.numPolygons++;
+  //   }
+  //   modelGL.numIndices[modelGL.numPolygons] = 0;
+  //   modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
+  // });
 
   createButtonEventListener();
 
@@ -145,18 +146,14 @@ function events() {
     const y =
       (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1;
     if (isDrawing) {
-
-      if (featuresIndex == 0){
-        modelGL.line_end = vec2(x,y);
+      if (featuresIndex == 0) {
+        modelGL.line_end = vec2(x, y);
       }
       if (featuresIndex == 1) {
-
       }
       if (featuresIndex == 2) {
-
       }
       if (featuresIndex == 3) {
-
       }
     }
   });
@@ -168,18 +165,15 @@ function events() {
         modelGL.line_end = [];
       }
       if (featuresIndex == 1) {
-        
       }
       if (featuresIndex == 2) {
-        
       }
       if (featuresIndex == 3) {
-        
       }
     }
     isDrawing = false;
     modelGL.drawnObject = null;
-    // console.log(shapes);
+    console.log(shapes);
     // console.log(modelGL.lines);
     console.log("up");
     // modelGL.index++;
@@ -195,28 +189,27 @@ function events() {
       (2 * e.clientX) / modelGL.canvas.width - 1,
       (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
     );
-    // modelGL.poly_pos.push(flatten(t));
-    // t = vec4(modelGL.chosen_color);
-    // modelGL.poly_col.push(flatten(t));
+    modelGL.poly_pos.push(flatten(t));
+    t = vec4(modelGL.chosen_color);
+    modelGL.poly_col.push(flatten(t));
 
-    // modelGL.numIndices[modelGL.numPolygons]++;
+    modelGL.numIndices[modelGL.numPolygons]++;
 
     // console.log(modelGL.start);
     if (featuresIndex == 0) {
-      // modelGL.polygon_idx++;
+      modelGL.polygon_idx++;
       modelGL.line_end = t;
       modelGL.line_start = t;
-
     }
     if (featuresIndex == 1) {
-      // modelGL.polygon_idx++;
+      modelGL.polygon_idx++;
     }
     if (featuresIndex == 2) {
-      // modelGL.polygon_idx++;
+      modelGL.polygon_idx++;
     }
     if (featuresIndex == 3) {
-      // render_polygon(e, modelGL);
-      // modelGL.polygon_idx++;
+      render_polygon(e, modelGL);
+      modelGL.polygon_idx++;
     }
   });
 
@@ -282,7 +275,7 @@ function events() {
     });
     read_file.readAsText(file);
   });
-  
+
   render();
   // draw();
 }
