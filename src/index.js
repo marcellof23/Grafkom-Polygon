@@ -74,7 +74,7 @@ function init() {
     alert("WebGL isn't available");
   }
 
-  modelGL.gl.canvas.width = 0.7 * window.innerWidth;
+  modelGL.gl.canvas.width = 0.6 * window.innerWidth;
   modelGL.gl.canvas.height = window.innerHeight;
 
   // Set viewport
