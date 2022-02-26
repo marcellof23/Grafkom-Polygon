@@ -18,14 +18,7 @@ var modelGL;
 
 function createButtonEventListener() {
   var a = document.getElementById("Button1");
-
   a.addEventListener("click", function () {
-    modelGL.gl.drawArrays(
-      modelGL.gl.TRIANGLE_FAN,
-      modelGL.start[modelGL.numPolygons],
-      modelGL.numIndices[modelGL.numPolygons]
-    );
-
     modelGL.numPolygons++;
     modelGL.numIndices[modelGL.numPolygons] = 0;
     modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
@@ -57,13 +50,6 @@ function draw(modelGL) {
 function render() {
   modelGL.gl.clear(modelGL.gl.COLOR_BUFFER_BIT);
   draw(modelGL);
-
-  // modelGL.gl.drawArrays(
-  //   modelGL.gl.TRIANGLE_FAN,
-  //   modelGL.start[modelGL.numPolygons],
-  //   modelGL.numIndices[modelGL.numPolygons]
-  // );
-
   // for (var i = 0; i <= modelGL.numPolygons; i++) {
   //   modelGL.gl.drawArrays(
   //     modelGL.gl.TRIANGLE_FAN,
@@ -130,12 +116,26 @@ function init() {
 }
 
 function events() {
-  let drawnObject = null;
-
+  var menu_features_idx = 0;
   // listeners
   let f = document.getElementById("features-menu");
   f.addEventListener("click", () => {
     featuresIndex = f.selectedIndex;
+    if (modelGL.numIndices[modelGL.numPolygons] > 2) {
+      modelGL.numPolygons++;
+      modelGL.numIndices[modelGL.numPolygons] = 0;
+      modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
+    }
+  });
+
+  let mf = document.getElementById("menu-features");
+  mf.addEventListener("click", () => {
+    menu_features_idx = mf.selectedIndex;
+    if (modelGL.numIndices[modelGL.numPolygons] > 2) {
+      modelGL.numPolygons++;
+      modelGL.numIndices[modelGL.numPolygons] = 0;
+      modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
+    }
   });
 
   createButtonEventListener();
@@ -145,53 +145,79 @@ function events() {
     const y =
       (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1;
     if (isDrawing) {
-      // if (features[featuresIndex] == "line") {
-      //   if (!drawnObject) {
-      //     drawnObject = [featuresIndex, vec4(x, y, x, y)];
-      //   }
-      //   console.log(drawnObject[1]);
-      //   drawnObject[1].pop();
-      //   drawnObject[1].pop();
-      //   drawnObject[1].push(x, y);
-      // }
-      modelGL.line_end = vec2(x,y);
-      // TODO: add conditional on others features
+
+      if (featuresIndex == 0){
+        modelGL.line_end = vec2(x,y);
+      }
+      if (featuresIndex == 1) {
+
+      }
+      if (featuresIndex == 2) {
+
+      }
+      if (featuresIndex == 3) {
+
+      }
     }
   });
   modelGL.canvas.addEventListener("mouseup", (e) => {
     if (isDrawing) {
-      modelGL.lines.push(createLine(modelGL.line_start, modelGL.line_end));
+      if (featuresIndex == 0) {
+        modelGL.lines.push(createLine(modelGL.line_start, modelGL.line_end));
+        modelGL.line_start = [];
+        modelGL.line_end = [];
+      }
+      if (featuresIndex == 1) {
+        
+      }
+      if (featuresIndex == 2) {
+        
+      }
+      if (featuresIndex == 3) {
+        
+      }
     }
     isDrawing = false;
-    modelGL.line_start = [];
-    modelGL.line_end = [];
-    drawnObject = null;
+    modelGL.drawnObject = null;
     // console.log(shapes);
-    console.log(modelGL.lines);
+    // console.log(modelGL.lines);
     console.log("up");
-    modelGL.index++;
+    // modelGL.index++;
     // draw();
   });
 
   //Register function on mouse press
   modelGL.canvas.addEventListener("mousedown", (e) => {
-    // render_polygon(e, modelGL);
-    isDrawing = true;
-    // TODO: add features listener here
     console.log("down");
+    isDrawing = true;
+
     var t = vec2(
       (2 * e.clientX) / modelGL.canvas.width - 1,
       (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
     );
-    modelGL.line_start = t;
-    modelGL.line_end = t;
     // modelGL.poly_pos.push(flatten(t));
     // t = vec4(modelGL.chosen_color);
     // modelGL.poly_col.push(flatten(t));
-    // console.log(modelGL.poly_pos);
-    // console.log(modelGL.polygon_idx);
+
     // modelGL.numIndices[modelGL.numPolygons]++;
-    // modelGL.polygon_idx++;
+
+    // console.log(modelGL.start);
+    if (featuresIndex == 0) {
+      // modelGL.polygon_idx++;
+      modelGL.line_end = t;
+      modelGL.line_start = t;
+
+    }
+    if (featuresIndex == 1) {
+      // modelGL.polygon_idx++;
+    }
+    if (featuresIndex == 2) {
+      // modelGL.polygon_idx++;
+    }
+    if (featuresIndex == 3) {
+      // render_polygon(e, modelGL);
+      // modelGL.polygon_idx++;
+    }
   });
 
   var colorInput = document.getElementById("color-input");
@@ -248,40 +274,7 @@ function events() {
         var data = await JSON.parse(e.target.result);
         if (data) {
           modelGL.load_data(data);
-          console.log(modelGL);
-          modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
-          for (
-            var idx = 0;
-            idx < modelGL.numIndices[modelGL.numPolygons];
-            idx++
-          ) {
-            modelGL.gl.bufferSubData(
-              modelGL.gl.ARRAY_BUFFER,
-              idx * 8,
-              new Float32Array([
-                modelGL.poly_pos[idx][0],
-                modelGL.poly_pos[idx][1],
-              ])
-            );
-          }
-
-          modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
-          for (
-            var idx = 0;
-            idx < modelGL.numIndices[modelGL.numPolygons];
-            idx++
-          ) {
-            modelGL.gl.bufferSubData(
-              modelGL.gl.ARRAY_BUFFER,
-              idx * 16,
-              new Float32Array([
-                modelGL.poly_col[idx][0],
-                modelGL.poly_col[idx][1],
-                modelGL.poly_col[idx][2],
-                modelGL.poly_col[idx][3],
-              ])
-            );
-          }
+          render_data(modelGL);
         }
       } catch (err) {
         alert(`invalid json file\n${err}`);
@@ -292,6 +285,41 @@ function events() {
   
   render();
   // draw();
+}
+
+function render_data(modelGL) {
+  console.log(modelGL);
+  modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
+  for (var nump = 0; nump < modelGL.numIndices.length; nump++) {
+    for (var idx = 0; idx < modelGL.numIndices[nump]; idx++) {
+      console.log(modelGL.start[nump] * 8 + idx * 8);
+      modelGL.gl.bufferSubData(
+        modelGL.gl.ARRAY_BUFFER,
+        modelGL.start[nump] * 8 + idx * 8,
+        new Float32Array([
+          modelGL.poly_pos[modelGL.start[nump] + idx][0],
+          modelGL.poly_pos[modelGL.start[nump] + idx][1],
+        ])
+      );
+    }
+  }
+
+  modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
+  for (var nump = 0; nump < modelGL.numIndices.length; nump++) {
+    for (var idx = 0; idx < modelGL.numIndices[nump]; idx++) {
+      console.log(modelGL.start[nump] * 16 + idx * 16);
+      modelGL.gl.bufferSubData(
+        modelGL.gl.ARRAY_BUFFER,
+        modelGL.start[nump] * 16 + idx * 16,
+        new Float32Array([
+          modelGL.poly_col[modelGL.start[nump] + idx][0],
+          modelGL.poly_col[modelGL.start[nump] + idx][1],
+          modelGL.poly_col[modelGL.start[nump] + idx][2],
+          modelGL.poly_col[modelGL.start[nump] + idx][3],
+        ])
+      );
+    }
+  }
 }
 
 function main() {
