@@ -125,6 +125,12 @@ function events() {
       modelGL.numIndices[modelGL.numPolygons] = 0;
       modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
       modelGL.lines.push(createLine(modelGL.line_start, modelGL.line_end));
+
+      var line = modelGL.lines[modelGL.lines.length - 1];
+      for (let i = 0; i < 4; i++) {
+        modelGL.poly_pos.push(flatten(vec2(line[i * 2], line[i * 2 + 1])));
+      }
+
       modelGL.line_start = [];
       modelGL.line_end = [];
     }
@@ -146,19 +152,18 @@ function events() {
     console.log(modelGL);
     console.log(menu_features_idx);
     isDrawing = true;
+    var t = vec2(
+      (2 * e.clientX) / modelGL.canvas.width - 1,
+      (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
+    );
 
     if (menu_features_idx == 0) {
       modelGL.polygon_idx += 4;
       modelGL.numIndices[modelGL.numPolygons] += 4;
 
-      var t = vec2(
-        (2 * e.clientX) / modelGL.canvas.width - 1,
-        (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
-      );
-
       modelGL.line_start = vec2(t);
-
       modelGL.line_end = vec2(t);
+      console.log(modelGL.line_start, modelGL.line_end);
     }
     if (menu_features_idx == 1) {
       modelGL.polygon_idx++;
