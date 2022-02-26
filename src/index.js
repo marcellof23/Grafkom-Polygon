@@ -133,9 +133,9 @@ function events() {
     menu_features_idx = mf.selectedIndex;
     if (modelGL.numIndices[modelGL.numPolygons] > 2) {
       modelGL.numPolygons++;
-      modelGL.numIndices[modelGL.numPolygons] = 0;
-      modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
     }
+    modelGL.numIndices[modelGL.numPolygons] = 0;
+    modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
   });
 
   createButtonEventListener();
