@@ -11,6 +11,8 @@ import {
   shapes,
 } from "./common/const";
 import { render_polygon } from "./event/polygon";
+import { render_line, createLine } from "./event/line";
+
 import { vec2, vec4, hexTodec, flatten } from "./helpers/helper";
 import { ModelGL } from "./model/webgl";
 
@@ -23,33 +25,6 @@ function createButtonEventListener() {
     modelGL.numIndices[modelGL.numPolygons] = 0;
     modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
   });
-}
-
-function draw() {
-  // draw tiap gambar tergantung tipenya
-  for (const shape of shapes) {
-    if (shape[0] === 0) {
-      const pBuffer = modelGL.gl.createBuffer();
-      // console.log(shape)
-      modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, pBuffer);
-
-      modelGL.gl.bufferData(
-        modelGL.gl.ARRAY_BUFFER,
-        new Float32Array(shape[1]),
-        modelGL.gl.STATIC_DRAW
-      );
-
-      const cBuffer = modelGL.gl.createBuffer();
-      modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, cBuffer);
-      let t = vec4(colors[cindex]);
-
-      modelGL.gl.bufferData(
-        modelGL.gl.ARRAY_BUFFER,
-        new Uint8Array(t),
-        modelGL.gl.STATIC_DRAW
-      );
-    }
-  }
 }
 
 function render() {
@@ -145,46 +120,61 @@ function events() {
     const y =
       (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1;
     if (isDrawing) {
-      if (features[featuresIndex] == "line") {
-        if (!drawnObject) {
-          drawnObject = [featuresIndex, vec4(x, y, x, y), modelGL.cindex];
-        }
-        console.log(drawnObject[1]);
-        drawnObject[1].pop();
-        drawnObject[1].pop();
-        drawnObject[1].push(x, y);
+      if (menu_features_idx == 0) {
+        modelGL.line_end = vec2(x, y);
+        render_line(modelGL);
       }
-      // TODO: add conditional on others features
+      if (menu_features_idx == 1) {
+      }
+      if (menu_features_idx == 2) {
+      }
+      if (menu_features_idx == 3) {
+      }
     }
   });
   modelGL.canvas.addEventListener("mouseup", (e) => {
     if (isDrawing) {
       shapes.push(drawnObject);
     }
+    if (menu_features_idx == 0) {
+      modelGL.numPolygons++;
+      modelGL.numIndices[modelGL.numPolygons] = 0;
+      modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
+      modelGL.lines.push(createLine(modelGL.line_start, modelGL.line_end));
+      modelGL.line_start = [];
+      modelGL.line_end = [];
+    }
+    if (featuresIndex == 1) {
+    }
+    if (featuresIndex == 2) {
+    }
+    if (featuresIndex == 3) {
+    }
     isDrawing = false;
     drawnObject = null;
-    console.log(shapes);
+    // console.log(shapes);
     console.log("up");
   });
 
   //Register function on mouse press
   modelGL.canvas.addEventListener("mousedown", (e) => {
     console.log("down");
+    console.log(modelGL);
+    console.log(menu_features_idx);
     isDrawing = true;
 
-    var t = vec2(
-      (2 * e.clientX) / modelGL.canvas.width - 1,
-      (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
-    );
-    modelGL.poly_pos.push(flatten(t));
-    t = vec4(modelGL.chosen_color);
-    modelGL.poly_col.push(flatten(t));
-
-    modelGL.numIndices[modelGL.numPolygons]++;
-
-    console.log(modelGL.start);
     if (menu_features_idx == 0) {
-      modelGL.polygon_idx++;
+      modelGL.polygon_idx += 4;
+      modelGL.numIndices[modelGL.numPolygons] += 4;
+
+      modelGL.line_end = vec2(
+        (2 * e.clientX) / modelGL.canvas.width - 1,
+        (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
+      );
+      modelGL.line_start = vec2(
+        (2 * e.clientX) / modelGL.canvas.width - 1,
+        (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
+      );
     }
     if (menu_features_idx == 1) {
       modelGL.polygon_idx++;
@@ -193,6 +183,16 @@ function events() {
       modelGL.polygon_idx++;
     }
     if (menu_features_idx == 3) {
+      var t = vec2(
+        (2 * e.clientX) / modelGL.canvas.width - 1,
+        (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
+      );
+      modelGL.poly_pos.push(flatten(t));
+      t = vec4(modelGL.chosen_color);
+      modelGL.poly_col.push(flatten(t));
+
+      modelGL.numIndices[modelGL.numPolygons]++;
+
       render_polygon(e, modelGL);
       modelGL.polygon_idx++;
     }
