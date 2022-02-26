@@ -4,7 +4,7 @@ import { cindex, colors, start, numIndices } from "../common/const";
 
 function render_line(modelGL) {
   modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
-  let line = createLine(modelGL.line_start, modelGL.line_end);
+  let line = createLine(modelGL.point_start, modelGL.point_end);
   for (let i = 0; i < 4; i++) {
     modelGL.gl.bufferSubData(
       modelGL.gl.ARRAY_BUFFER,
@@ -18,7 +18,7 @@ function render_line(modelGL) {
     modelGL.gl.bufferSubData(
       modelGL.gl.ARRAY_BUFFER,
       16 * (i + modelGL.start[modelGL.numPolygons]),
-      flatten(vec4(colors[0]))
+      flatten(vec4(modelGL.chosen_color))
     );
   }
 }

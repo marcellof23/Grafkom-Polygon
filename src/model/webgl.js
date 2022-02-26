@@ -27,10 +27,10 @@ class ModelGL {
 
     // poly_pos is an array of vector color that include all the color value in the buffer
     this.poly_col = [];
-
+    
     this.lines = [];
-    this.line_start = [];
-    this.line_end = [];
+    this.point_start = [];
+    this.point_end = [];
 
     this.mouseClicked = false;
   }
