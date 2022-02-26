@@ -167,11 +167,12 @@ function events() {
       modelGL.polygon_idx += 4;
       modelGL.numIndices[modelGL.numPolygons] += 4;
 
-      modelGL.line_end = vec2(
+      modelGL.line_start = vec2(
         (2 * e.clientX) / modelGL.canvas.width - 1,
         (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
       );
-      modelGL.line_start = vec2(
+
+      modelGL.line_end = vec2(
         (2 * e.clientX) / modelGL.canvas.width - 1,
         (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
       );
