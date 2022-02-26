@@ -227,7 +227,6 @@ function events() {
   let formatJSONPrefix = "data:text/json;charset=utf-8,";
   const exportBtn = document.getElementById("export-button");
   exportBtn.addEventListener("click", () => {
-    modelGL.numPolygons += 1;
     var string_data =
       formatJSONPrefix + encodeURIComponent(JSON.stringify(modelGL));
     var download_button = document.getElementById("download-link");
