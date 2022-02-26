@@ -1,6 +1,6 @@
 import { euclidean_distance } from "../helpers/helper";
 
-const threshold = 0.015;
+const threshold = 0.05;
 
 function search_vertices(curr_point, modelGL) {
   for (let i = 0; i < modelGL.poly_pos.length; i++) {

@@ -103,6 +103,13 @@ function events() {
     modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
   });
 
+  var a = document.getElementById("Button1");
+  a.addEventListener("click", function () {
+    modelGL.numPolygons++;
+    modelGL.numIndices[modelGL.numPolygons] = 0;
+    modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
+  });
+
   modelGL.canvas.addEventListener("mousemove", (e) => {
     const x = (2 * e.clientX) / modelGL.canvas.width - 1;
     const y =
