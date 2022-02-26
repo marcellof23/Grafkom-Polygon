@@ -26,7 +26,6 @@ function render() {
       modelGL.start[i],
       modelGL.numIndices[i]
     );
-    console.log(modelGL.start[i], modelGL.numIndices[i]);
   }
 
   window.requestAnimFrame(render);
@@ -89,11 +88,6 @@ function init() {
 function events() {
   let drawnObject = null;
   var menu_features_idx = 0;
-  // listeners
-  let f = document.getElementById("features-menu");
-  f.addEventListener("click", () => {
-    featuresIndex = f.selectedIndex;
-  });
 
   let mf = document.getElementById("menu-features");
   mf.addEventListener("click", () => {
@@ -157,15 +151,14 @@ function events() {
       modelGL.polygon_idx += 4;
       modelGL.numIndices[modelGL.numPolygons] += 4;
 
-      modelGL.line_start = vec2(
+      var t = vec2(
         (2 * e.clientX) / modelGL.canvas.width - 1,
         (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
       );
 
-      modelGL.line_end = vec2(
-        (2 * e.clientX) / modelGL.canvas.width - 1,
-        (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
-      );
+      modelGL.line_start = vec2(t);
+
+      modelGL.line_end = vec2(t);
     }
     if (menu_features_idx == 1) {
       modelGL.polygon_idx++;
@@ -174,10 +167,6 @@ function events() {
       modelGL.polygon_idx++;
     }
     if (menu_features_idx == 3) {
-      var t = vec2(
-        (2 * e.clientX) / modelGL.canvas.width - 1,
-        (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
-      );
       modelGL.poly_pos.push(flatten(t));
       t = vec4(modelGL.chosen_color);
       modelGL.poly_col.push(flatten(t));
