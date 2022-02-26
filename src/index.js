@@ -10,13 +10,16 @@ import {
   features,
   shapes,
 } from "./common/const";
-import { render_polygon } from "./event/polygon";
-import { render_line, createLine } from "./event/line";
+import { render_polygon } from "./create/polygon";
+import { render_line, createLine } from "./create/line";
 
 import { vec2, vec4, hexTodec, flatten } from "./helpers/helper";
 import { ModelGL } from "./model/webgl";
 
+import { search_vertices } from "./event/search";
 var modelGL;
+var BELOW_TRESHOLD;
+var chosen_idx, last_pos;
 
 function render() {
   modelGL.gl.clear(modelGL.gl.COLOR_BUFFER_BIT);
@@ -32,6 +35,7 @@ function render() {
 }
 
 function init() {
+  BELOW_TRESHOLD = false;
   // Retrieve  canvas element
   modelGL.canvas = document.getElementById("webgl");
   // Get the rendering context
@@ -103,6 +107,16 @@ function events() {
     const x = (2 * e.clientX) / modelGL.canvas.width - 1;
     const y =
       (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1;
+
+    if (BELOW_TRESHOLD) {
+      modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
+      modelGL.gl.bufferSubData(
+        modelGL.gl.ARRAY_BUFFER,
+        chosen_idx * 8,
+        flatten(vec2(x, y))
+      );
+      last_pos = vec2(x, y);
+    }
     if (isDrawing) {
       if (menu_features_idx == 0) {
         modelGL.line_end = vec2(x, y);
@@ -120,6 +134,8 @@ function events() {
     if (isDrawing) {
       shapes.push(drawnObject);
     }
+    BELOW_TRESHOLD = false;
+
     if (menu_features_idx == 0) {
       modelGL.numPolygons++;
       modelGL.numIndices[modelGL.numPolygons] = 0;
@@ -143,6 +159,9 @@ function events() {
     if (menu_features_idx == 2) {
     }
     if (menu_features_idx == 3) {
+    }
+    if (menu_features_idx == 4) {
+      modelGL.poly_pos[chosen_idx] = flatten(last_pos);
     }
     isDrawing = false;
     drawnObject = null;
@@ -184,6 +203,14 @@ function events() {
 
       render_polygon(e, modelGL);
       modelGL.polygon_idx++;
+    }
+    if (menu_features_idx == 4) {
+      var idx = search_vertices(t, modelGL);
+      if (idx != -1) {
+        BELOW_TRESHOLD = true;
+        chosen_idx = idx;
+        console.log(chosen_idx);
+      }
     }
   });
 

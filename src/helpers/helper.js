@@ -67,4 +67,8 @@ function hexTodec(n) {
   return parseInt(n, 16).toString(10);
 }
 
-export { argsToArray, vec2, vec4, flatten, hexTodec };
+function euclidean_distance(x1, y1, x2, y2) {
+  return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+}
+
+export { argsToArray, vec2, vec4, flatten, hexTodec, euclidean_distance };
