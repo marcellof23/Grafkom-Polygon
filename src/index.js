@@ -18,15 +18,6 @@ import { ModelGL } from "./model/webgl";
 
 var modelGL;
 
-function createButtonEventListener() {
-  var a = document.getElementById("Button1");
-  a.addEventListener("click", function () {
-    modelGL.numPolygons++;
-    modelGL.numIndices[modelGL.numPolygons] = 0;
-    modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
-  });
-}
-
 function render() {
   modelGL.gl.clear(modelGL.gl.COLOR_BUFFER_BIT);
   for (var i = 0; i <= modelGL.numPolygons; i++) {
@@ -35,6 +26,7 @@ function render() {
       modelGL.start[i],
       modelGL.numIndices[i]
     );
+    console.log(modelGL.start[i], modelGL.numIndices[i]);
   }
 
   window.requestAnimFrame(render);
@@ -112,8 +104,6 @@ function events() {
     modelGL.numIndices[modelGL.numPolygons] = 0;
     modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
   });
-
-  createButtonEventListener();
 
   modelGL.canvas.addEventListener("mousemove", (e) => {
     const x = (2 * e.clientX) / modelGL.canvas.width - 1;
