@@ -244,7 +244,6 @@ function events() {
       if (menu_features_idx == 3) {
         modelGL.last_polygon_idx = modelGL.polygon_idx;
         modelGL.last_num = modelGL.numPolygons;
-        console.log(modelGL.last_polygon_idx);
       }
       if (menu_features_idx == 4 && BELOW_TRESHOLD) {
         modelGL.poly_pos[chosen_idx] = flatten(last_pos);
@@ -305,7 +304,9 @@ function events() {
       }
       if (menu_features_idx == 4) {
         var idx = search_vertices(t, modelGL);
-        if (idx != -1 && isPointOfShapes(idx, 3, modelGL)) {
+        console.log(idx);
+        if (idx != -1) {
+          console.log("polygon");
           BELOW_TRESHOLD = true;
           chosen_idx = idx;
           console.log(chosen_idx);
