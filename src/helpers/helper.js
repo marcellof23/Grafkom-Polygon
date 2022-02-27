@@ -71,4 +71,29 @@ function euclidean_distance(x1, y1, x2, y2) {
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 }
 
-export { argsToArray, vec2, vec4, flatten, hexTodec, euclidean_distance };
+function leastStartIndex(pointIdx, modelGL) {
+  let idxPoly = 0;
+  while (modelGL.start[idxPoly] < pointIdx && idxPoly < modelGL.start.length) {
+    idxPoly++;
+  }
+  if (idxPoly === modelGL.start.length) return -1;
+  if (modelGL.start[idxPoly] === pointIdx) {
+    return pointIdx
+  }
+  return idxPoly-1;
+}
+
+function isPointOfShapes(pointIdx, shape, modelGL) {
+  let leastStartIdx = leastStartIndex(pointIdx, modelGL)
+  if (leastStartIdx === -1) {
+    return false;
+  }
+  return modelGL.shapes[leastStartIdx] === shape;
+}
+
+function midPoint(p1, p2) {
+  return [(p1[0] + p2[0])/2, (p1[1] + p2[1])/2];
+}
+
+
+export { argsToArray, vec2, vec4, flatten, hexTodec, euclidean_distance, isPointOfShapes, leastStartIndex, midPoint };

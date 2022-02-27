@@ -17,6 +17,10 @@ class ModelGL {
     // numIndices is attribute for tracking how many vertex used in the object
     this.numIndices = [0];
 
+    // Shapes contains type of shape of a polygon
+    // 0 = line, 1 = square, 2 = rectangle, 3 = polygon
+    this.shapes = [0];
+
     // start is attribute that give information about starting index in the buffer
     // for example, you have one 3 points polygon, and another 3 points polygon, so the
     // start will be [0, 3]
@@ -28,7 +32,6 @@ class ModelGL {
     // poly_pos is an array of vector color that include all the color value in the buffer
     this.poly_col = [];
     
-    this.lines = [];
     this.point_start = [];
     this.point_end = [];
 
