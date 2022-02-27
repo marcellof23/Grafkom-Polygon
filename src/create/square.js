@@ -1,4 +1,4 @@
-import { vec2, vec4, flatten, euclidean_distance } from "../helpers/helper";
+import { vec2, vec4, flatten, leastStartIndex } from "../helpers/helper";
 
 import { cindex, colors, start, numIndices } from "../common/const";
 
@@ -79,4 +79,15 @@ function createSquare(start, end) {
 
 }
 
-export { render_square, createSquare }
+function moveSquare(idx, modelGL) {
+  const startIdx = leastStartIndex(idx, modelGL)
+  const dIdx = idx - startIdx;
+  modelGL.point_end = modelGL.poly_pos[idx]
+  if (dIdx < 2) {
+    modelGL.point_start = modelGL.poly_pos[idx + 2]
+    return
+  }
+  modelGL.point_start = modelGL.poly_pos[idx - 2]
+}
+
+export { render_square, createSquare, render_old_square, moveSquare }

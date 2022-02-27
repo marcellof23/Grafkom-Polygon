@@ -16,7 +16,7 @@ import { render_line, createLine, moveLine, render_old_line } from "./create/lin
 import { vec2, vec4, hexTodec, flatten, isPointOfShapes, leastStartIndex } from "./helpers/helper";
 import { ModelGL } from "./model/webgl";
 import { createRectangle, render_rectangle } from "./create/rectangle";
-import { createSquare, render_square } from "./create/square";
+import { createSquare, moveSquare, render_old_square, render_square } from "./create/square";
 
 import { search_vertices } from "./event/search";
 var modelGL;
@@ -151,7 +151,7 @@ function events() {
       }
       if (menu_features_idx == 6 && BELOW_TRESHOLD) {
         modelGL.point_end = vec2(x, y);
-
+        render_old_square(chosen_start_idx, modelGL);
       }
     }
   });
@@ -214,7 +214,7 @@ function events() {
       modelGL.poly_pos[chosen_idx] = flatten(last_pos);
     }
     if (menu_features_idx == 5 && BELOW_TRESHOLD) {
-      line = createLine(modelGL.point_start, modelGL.point_end);
+      const line = createLine(modelGL.point_start, modelGL.point_end);
       for (let i = 0; i < 4; i++) {
         modelGL.poly_pos[chosen_start_idx + i] = flatten(vec2(line[i * 2], line[i * 2 + 1]));
       }
@@ -222,7 +222,12 @@ function events() {
       modelGL.point_end = [];
     }
     if (menu_features_idx == 6 && BELOW_TRESHOLD) {
-
+      const points = createSquare(modelGL.point_start, modelGL.point_end);
+      for (let i = 0; i < 4; i++) {
+        modelGL.poly_pos[chosen_start_idx + i] = flatten(vec2(points[i * 2], points[i * 2 + 1]));
+      }
+      modelGL.point_start = [];
+      modelGL.point_end = [];
     }
     isDrawing = false;
     BELOW_TRESHOLD = false;
@@ -288,6 +293,7 @@ function events() {
         chosen_idx = idx;
         chosen_start_idx = leastStartIndex(idx, modelGL);
         console.log(chosen_idx);
+        moveSquare(chosen_idx, modelGL)
       }
     }
   });
