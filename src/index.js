@@ -11,17 +11,36 @@ import {
   shapes,
 } from "./common/const";
 import { render_polygon } from "./create/polygon";
-import { render_line, createLine, moveLine, render_old_line } from "./create/line";
+import {
+  render_line,
+  createLine,
+  moveLine,
+  render_old_line,
+} from "./create/line";
 
-import { vec2, vec4, hexTodec, flatten, isPointOfShapes, leastStartIndex } from "./helpers/helper";
+import {
+  vec2,
+  vec4,
+  hexTodec,
+  flatten,
+  isPointOfShapes,
+  leastStartIndex,
+} from "./helpers/helper";
 import { ModelGL } from "./model/webgl";
 import { createRectangle, render_rectangle } from "./create/rectangle";
-import { createSquare, moveSquare, render_old_square, render_square } from "./create/square";
+import {
+  createSquare,
+  moveSquare,
+  render_old_square,
+  render_square,
+} from "./create/square";
 
 import { search_vertices } from "./event/search";
 var modelGL;
 var BELOW_TRESHOLD;
 var chosen_idx, last_pos, chosen_start_idx;
+var isChecked;
+var polyToggler;
 
 function render() {
   modelGL.gl.clear(modelGL.gl.COLOR_BUFFER_BIT);
@@ -38,6 +57,7 @@ function render() {
 
 function init() {
   BELOW_TRESHOLD = false;
+  isChecked = false;
   // Retrieve  canvas element
   modelGL.canvas = document.getElementById("webgl");
   // Get the rendering context
@@ -94,6 +114,19 @@ function init() {
 function events() {
   var menu_features_idx = 0;
 
+  polyToggler = document.getElementById("start-draw");
+  polyToggler.addEventListener("change", () => {
+    isChecked = polyToggler.checked;
+    if (
+      modelGL.numIndices[modelGL.numPolygons] > 2 ||
+      modelGL.numPolygons == 0
+    ) {
+      modelGL.numPolygons++;
+      modelGL.numIndices[modelGL.numPolygons] = 0;
+      modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
+    }
+  });
+
   let mf = document.getElementById("menu-features");
   mf.addEventListener("click", () => {
     menu_features_idx = mf.selectedIndex;
@@ -105,196 +138,203 @@ function events() {
     modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
   });
 
-  var a = document.getElementById("Button1");
-  a.addEventListener("click", function () {
-    modelGL.numPolygons++;
-    modelGL.numIndices[modelGL.numPolygons] = 0;
-    modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
-  });
-
   modelGL.canvas.addEventListener("mousemove", (e) => {
-    const x = (2 * e.clientX) / modelGL.canvas.width - 1;
-    const y =
-      (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1;
-    document.getElementById("clientX").innerHTML = x.toFixed(2);
-    document.getElementById("clientY").innerHTML = y.toFixed(2);
-    if (isDrawing) {
-      if (menu_features_idx == 0) {
-        modelGL.point_end = vec2(x, y);
-        render_line(modelGL);
-      }
-      if (menu_features_idx == 1) {
-        modelGL.point_end = vec2(x, y);
-        render_square(modelGL);
-
-      }
-      if (menu_features_idx == 2) {
-        modelGL.point_end = vec2(x, y);
-        render_rectangle(modelGL);
-      }
-      if (menu_features_idx == 3) {
-      }
-      if (menu_features_idx == 4) {
-        if (BELOW_TRESHOLD) {
-          modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
-          modelGL.gl.bufferSubData(
-            modelGL.gl.ARRAY_BUFFER,
-            chosen_idx * 8,
-            flatten(vec2(x, y))
-          );
-          last_pos = vec2(x, y);
+    if (isChecked) {
+      const x = (2 * e.clientX) / modelGL.canvas.width - 1;
+      const y =
+        (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1;
+      document.getElementById("clientX").innerHTML = x.toFixed(2);
+      document.getElementById("clientY").innerHTML = y.toFixed(2);
+      if (isDrawing) {
+        if (menu_features_idx == 0) {
+          modelGL.point_end = vec2(x, y);
+          render_line(modelGL);
         }
-      }
-      if (menu_features_idx == 5 && BELOW_TRESHOLD) {
-        modelGL.point_end = vec2(x, y);
-        render_old_line(chosen_start_idx, modelGL);
-      }
-      if (menu_features_idx == 6 && BELOW_TRESHOLD) {
-        modelGL.point_end = vec2(x, y);
-        render_old_square(chosen_start_idx, modelGL);
+        if (menu_features_idx == 1) {
+          modelGL.point_end = vec2(x, y);
+          render_square(modelGL);
+        }
+        if (menu_features_idx == 2) {
+          modelGL.point_end = vec2(x, y);
+          render_rectangle(modelGL);
+        }
+        if (menu_features_idx == 3) {
+          modelGL.last_polygon_idx = modelGL.polygon_idx;
+          modelGL.last_num = modelGL.numPolygons;
+        }
+        if (menu_features_idx == 4) {
+          if (BELOW_TRESHOLD) {
+            modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
+            modelGL.gl.bufferSubData(
+              modelGL.gl.ARRAY_BUFFER,
+              chosen_idx * 8,
+              flatten(vec2(x, y))
+            );
+            last_pos = vec2(x, y);
+          }
+        }
+        if (menu_features_idx == 5 && BELOW_TRESHOLD) {
+          modelGL.point_end = vec2(x, y);
+          render_old_line(chosen_start_idx, modelGL);
+        }
+        if (menu_features_idx == 6 && BELOW_TRESHOLD) {
+          modelGL.point_end = vec2(x, y);
+          render_old_square(chosen_start_idx, modelGL);
+        }
       }
     }
   });
   modelGL.canvas.addEventListener("mouseup", (e) => {
+    if (isChecked) {
+      if (menu_features_idx == 0) {
+        modelGL.numPolygons++;
+        modelGL.numIndices[modelGL.numPolygons] = 0;
+        modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
 
-    if (menu_features_idx == 0) {
-      modelGL.numPolygons++;
-      modelGL.numIndices[modelGL.numPolygons] = 0;
-      modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
+        var line = createLine(modelGL.point_start, modelGL.point_end);
+        for (let i = 0; i < 4; i++) {
+          modelGL.poly_pos.push(flatten(vec2(line[i * 2], line[i * 2 + 1])));
+        }
 
-      var line = createLine(modelGL.point_start, modelGL.point_end);
-      for (let i = 0; i < 4; i++) {
-        modelGL.poly_pos.push(flatten(vec2(line[i * 2], line[i * 2 + 1])));
+        for (let i = 0; i < 4; i++) {
+          modelGL.poly_col.push(colors[0]);
+        }
+
+        modelGL.point_start = [];
+        modelGL.point_end = [];
       }
+      if (menu_features_idx == 1) {
+        modelGL.numPolygons++;
+        modelGL.numIndices[modelGL.numPolygons] = 0;
+        modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
 
-      for (let i = 0; i < 4; i++) {
-        modelGL.poly_col.push(colors[0]);
+        var points = createSquare(modelGL.point_start, modelGL.point_end);
+        for (let i = 0; i < 4; i++) {
+          modelGL.poly_pos.push(
+            flatten(vec2(points[i * 2], points[i * 2 + 1]))
+          );
+        }
+
+        for (let i = 0; i < 4; i++) {
+          modelGL.poly_col.push(colors[0]);
+        }
+
+        modelGL.point_start = [];
+        modelGL.point_end = [];
       }
+      if (menu_features_idx == 2) {
+        modelGL.numPolygons++;
+        modelGL.numIndices[modelGL.numPolygons] = 0;
+        modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
 
-      modelGL.point_start = [];
-      modelGL.point_end = [];
+        var points = createRectangle(modelGL.point_start, modelGL.point_end);
+        for (let i = 0; i < 4; i++) {
+          modelGL.poly_pos.push(
+            flatten(vec2(points[i * 2], points[i * 2 + 1]))
+          );
+        }
+
+        for (let i = 0; i < 4; i++) {
+          modelGL.poly_col.push(colors[0]);
+        }
+
+        modelGL.point_start = [];
+        modelGL.point_end = [];
+      }
+      if (menu_features_idx == 3) {
+        modelGL.last_polygon_idx = modelGL.polygon_idx;
+        modelGL.last_num = modelGL.numPolygons;
+      }
+      if (menu_features_idx == 4 && BELOW_TRESHOLD) {
+        modelGL.poly_pos[chosen_idx] = flatten(last_pos);
+      }
+      if (menu_features_idx == 5 && BELOW_TRESHOLD) {
+        const line = createLine(modelGL.point_start, modelGL.point_end);
+        for (let i = 0; i < 4; i++) {
+          modelGL.poly_pos[chosen_start_idx + i] = flatten(
+            vec2(line[i * 2], line[i * 2 + 1])
+          );
+        }
+        modelGL.point_start = [];
+        modelGL.point_end = [];
+      }
+      if (menu_features_idx == 6 && BELOW_TRESHOLD) {
+        const points = createSquare(modelGL.point_start, modelGL.point_end);
+        for (let i = 0; i < 4; i++) {
+          modelGL.poly_pos[chosen_start_idx + i] = flatten(
+            vec2(points[i * 2], points[i * 2 + 1])
+          );
+        }
+        modelGL.point_start = [];
+        modelGL.point_end = [];
+      }
+      isDrawing = false;
+      BELOW_TRESHOLD = false;
     }
-    if (menu_features_idx == 1) {
-      modelGL.numPolygons++;
-      modelGL.numIndices[modelGL.numPolygons] = 0;
-      modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
-
-      var points = createSquare(modelGL.point_start, modelGL.point_end);
-      for (let i = 0; i < 4; i++) {
-        modelGL.poly_pos.push(flatten(vec2(points[i * 2], points[i * 2 + 1])));
-      }
-
-      for (let i = 0; i < 4; i++) {
-        modelGL.poly_col.push(colors[0]);
-      }
-
-      modelGL.point_start = [];
-      modelGL.point_end = [];
-    }
-    if (menu_features_idx == 2) {
-      modelGL.numPolygons++;
-      modelGL.numIndices[modelGL.numPolygons] = 0;
-      modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
-
-      var points = createRectangle(modelGL.point_start, modelGL.point_end);
-      for (let i = 0; i < 4; i++) {
-        modelGL.poly_pos.push(flatten(vec2(points[i * 2], points[i * 2 + 1])));
-      }
-
-      for (let i = 0; i < 4; i++) {
-        modelGL.poly_col.push(colors[0]);
-      }
-
-      modelGL.point_start = [];
-      modelGL.point_end = [];
-    }
-    if (menu_features_idx == 3) {
-    }
-    if (menu_features_idx == 4 && BELOW_TRESHOLD) {
-      modelGL.poly_pos[chosen_idx] = flatten(last_pos);
-    }
-    if (menu_features_idx == 5 && BELOW_TRESHOLD) {
-      const line = createLine(modelGL.point_start, modelGL.point_end);
-      for (let i = 0; i < 4; i++) {
-        modelGL.poly_pos[chosen_start_idx + i] = flatten(vec2(line[i * 2], line[i * 2 + 1]));
-      }
-      modelGL.point_start = [];
-      modelGL.point_end = [];
-    }
-    if (menu_features_idx == 6 && BELOW_TRESHOLD) {
-      const points = createSquare(modelGL.point_start, modelGL.point_end);
-      for (let i = 0; i < 4; i++) {
-        modelGL.poly_pos[chosen_start_idx + i] = flatten(vec2(points[i * 2], points[i * 2 + 1]));
-      }
-      modelGL.point_start = [];
-      modelGL.point_end = [];
-    }
-    isDrawing = false;
-    BELOW_TRESHOLD = false;
-    // console.log(shapes);
-    console.log("up");
   });
 
   //Register function on mouse press
   modelGL.canvas.addEventListener("mousedown", (e) => {
-    console.log("down");
-    console.log(modelGL);
-    // console.log(menu_features_idx);
-    isDrawing = true;
-    var t = vec2(
-      (2 * e.clientX) / modelGL.canvas.width - 1,
-      (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
-    );
+    if (isChecked) {
+      isDrawing = true;
+      var t = vec2(
+        (2 * e.clientX) / modelGL.canvas.width - 1,
+        (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1
+      );
 
-    if (menu_features_idx < 3) {
-      modelGL.polygon_idx += 4;
-      modelGL.numIndices[modelGL.numPolygons] += 4;
-      modelGL.shapes[modelGL.numPolygons] = menu_features_idx;
+      if (menu_features_idx < 3) {
+        modelGL.polygon_idx += 4;
+        modelGL.numIndices[modelGL.numPolygons] += 4;
+        modelGL.shapes[modelGL.numPolygons] = menu_features_idx;
 
-      modelGL.point_start = vec2(t);
-      modelGL.point_end = vec2(t);
-      console.log(modelGL.point_start, modelGL.point_end);
-    }
-    if (menu_features_idx == 3) {
-      modelGL.poly_pos.push(flatten(t));
-      t = vec4(modelGL.chosen_color);
-      modelGL.poly_col.push(flatten(t));
-
-      modelGL.numIndices[modelGL.numPolygons]++;
-      modelGL.shapes[modelGL.numPolygons] = menu_features_idx;
-
-      render_polygon(e, modelGL);
-      modelGL.polygon_idx++;
-    }
-    if (menu_features_idx == 4) {
-      var idx = search_vertices(t, modelGL);
-      if (idx != -1 && isPointOfShapes(idx, 3, modelGL)) {
-        BELOW_TRESHOLD = true;
-        chosen_idx = idx;
-        
-        last_pos = t;
+        modelGL.point_start = vec2(t);
+        modelGL.point_end = vec2(t);
+        console.log(modelGL.point_start, modelGL.point_end);
       }
-    }
-    if (menu_features_idx == 5) {
-      const idx = search_vertices(t, modelGL);
-      
-      if (idx != -1 && isPointOfShapes(idx, 0, modelGL)) {
-        BELOW_TRESHOLD = true;
-        chosen_idx = idx;
-        chosen_start_idx = leastStartIndex(idx, modelGL);
-        
-        moveLine(chosen_idx, modelGL);
-        
+      if (menu_features_idx == 3) {
+        modelGL.poly_pos.push(flatten(t));
+        t = vec4(modelGL.chosen_color);
+        modelGL.poly_col.push(flatten(t));
+
+        modelGL.numIndices[modelGL.numPolygons]++;
+        modelGL.shapes[modelGL.numPolygons] = menu_features_idx;
+
+        render_polygon(e, modelGL);
+        modelGL.polygon_idx++;
       }
-    }
-    if (menu_features_idx == 6) {
-      const idx = search_vertices(t, modelGL);
-      if (idx != -1 && isPointOfShapes(idx, 1, modelGL)) {
-        BELOW_TRESHOLD = true;
-        chosen_idx = idx;
-        chosen_start_idx = leastStartIndex(idx, modelGL);
-        
-        moveSquare(chosen_idx, modelGL)
+      if (menu_features_idx == 4) {
+        var idx = search_vertices(t, modelGL);
+        console.log(idx);
+        if (idx != -1) {
+          console.log("polygon");
+          BELOW_TRESHOLD = true;
+          chosen_idx = idx;
+          console.log(chosen_idx);
+          last_pos = t;
+        }
+      }
+      if (menu_features_idx == 5) {
+        const idx = search_vertices(t, modelGL);
+        if (idx != -1 && isPointOfShapes(idx, 0, modelGL)) {
+          BELOW_TRESHOLD = true;
+          chosen_idx = idx;
+          console.log(chosen_idx);
+          chosen_start_idx = leastStartIndex(idx, modelGL);
+          moveLine(chosen_idx, modelGL);
+          console.log(modelGL);
+        }
+      }
+      if (menu_features_idx == 6) {
+        const idx = search_vertices(t, modelGL);
+        if (idx != -1 && isPointOfShapes(idx, 1, modelGL)) {
+          BELOW_TRESHOLD = true;
+          chosen_idx = idx;
+          modelGL.last_polygon_idx = modelGL.polygon_idx;
+          modelGL.last_num = modelGL.numPolygons;
+          chosen_start_idx = leastStartIndex(idx, modelGL);
+          console.log(chosen_idx);
+          moveSquare(chosen_idx, modelGL);
+        }
       }
     }
   });
@@ -310,8 +350,14 @@ function events() {
     ];
 
     modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
-    var offSet = modelGL.polygon_idx - modelGL.numIndices[modelGL.numPolygons];
-    for (var idx = 0; idx < modelGL.numIndices[modelGL.numPolygons]; idx++) {
+    var offSet =
+      modelGL.last_polygon_idx - modelGL.numIndices[modelGL.last_num];
+    console.log(
+      "woi",
+      modelGL.last_polygon_idx,
+      modelGL.numIndices[modelGL.last_num]
+    );
+    for (var idx = 0; idx < modelGL.numIndices[modelGL.last_num]; idx++) {
       modelGL.gl.bufferSubData(
         modelGL.gl.ARRAY_BUFFER,
         (offSet + idx) * 16,
