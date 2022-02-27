@@ -60,6 +60,7 @@
               <option value="5">Change line's length</option>
               <option value="6">Change square's size</option>
             </select>
+            <input type="checkbox" name="polygon" id="start-draw">Begin Draw
           </div>
         </div>
       </div>
@@ -68,7 +69,6 @@
             Pick color: 
             <input id="color-input" type="color" value="#000000">
         </div>
-        <button id = "Button1">End Polygon</button>
         <div>
           <p>X: </p>
           <p id="clientX"></p>
@@ -82,34 +82,38 @@
     </div>
 
     <textarea class="" rows="40" cols="80" readonly >
-Mengubah Warna
-- Klik kiri pada tombol di kiri bawah (bawah features)
-- Pilih warna sesuka hati
-Membuat Line
-- Pilih fitur "Line"
-- Klik kiri mouse, kemudian drag untuk membuat garis
-Membuat square
-- Pilih fitur "Square"
-- Klik kiri mouse, kemudian drag untuk membuat persegi
-Membuat Polygon (Hanya untuk Polygon Convex)
-- Pilih fitur "Polygon"
-- klik kiri mouse minimal 3 titik, lalu tambah sesuai hati jumlah
-  titik yang diinginkan
-- Klik end polygon jika ingin menambah polygon baru
-Mengubah Line
-- Pilih fitur "Change line's length"
-- Klik kiri pada titik sudut garis, kemudian drag untuk merubah garis
-Mengubah Square
-- Pilih fitur "Change square's size"
-- Klik kiri pada titik sudut garis, kemudian drag untuk merubah persegi
-Mengubah Titik Polygon
-- Pilih fitur "Move"
-- Klik kiri pada tiitk sudut suatu polygon, kemudian drag untuk merubah polygon 
-Export
-- Klik export
-Import
-- Klik import
-- Pilih json hasil export sebelumnya
+
+    REMINDER 
+    - Saat membuat polygon, dan sebelum mengganti ke fitur lain, pastikan
+      Menekan tombol end polygon
+    Mengubah Warna
+    - Klik kiri pada tombol di kiri bawah (bawah features)
+    - Pilih warna sesuka hati
+    Membuat Line
+    - Pilih fitur "Line"
+    - Klik kiri mouse, kemudian drag untuk membuat garis
+    Membuat square
+    - Pilih fitur "Square"
+    - Klik kiri mouse, kemudian drag untuk membuat persegi
+    Membuat Polygon (Hanya untuk Polygon Convex)
+    - Pilih fitur "Polygon"
+    - klik kiri mouse minimal 3 titik, lalu tambah sesuai hati jumlah
+      titik yang diinginkan
+    - Klik end polygon jika ingin menambah polygon baru
+    Mengubah Line
+    - Pilih fitur "Change line's length"
+    - Klik kiri pada titik sudut garis, kemudian drag untuk merubah garis
+    Mengubah Square
+    - Pilih fitur "Change square's size"
+    - Klik kiri pada titik sudut garis, kemudian drag untuk merubah persegi
+    Mengubah Titik Polygon
+    - Pilih fitur "Move"
+    - Klik kiri pada titik sudut suatu polygon, kemudian drag untuk merubah polygon 
+    Export
+    - Klik export
+    Import
+    - Klik import
+    - Pilih json hasil export sebelumnya
     </textarea>
     </div>
   </body>
