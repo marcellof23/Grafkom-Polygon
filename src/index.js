@@ -105,6 +105,8 @@ function events() {
 
   var a = document.getElementById("Button1");
   a.addEventListener("click", function () {
+    modelGL.last_polygon_idx = modelGL.polygon_idx;
+    modelGL.last_num = modelGL.numPolygons;
     modelGL.numPolygons++;
     modelGL.numIndices[modelGL.numPolygons] = 0;
     modelGL.start[modelGL.numPolygons] = modelGL.polygon_idx;
@@ -141,7 +143,6 @@ function events() {
     if (isDrawing) {
       shapes.push(drawnObject);
     }
-    BELOW_TRESHOLD = false;
 
     if (menu_features_idx == 0) {
       modelGL.numPolygons++;
@@ -168,8 +169,14 @@ function events() {
     if (menu_features_idx == 3) {
     }
     if (menu_features_idx == 4) {
-      modelGL.poly_pos[chosen_idx] = flatten(last_pos);
+      modelGL.last_polygon_idx = modelGL.polygon_idx;
+      modelGL.last_num = modelGL.numPolygons;
+      if (BELOW_TRESHOLD) {
+        modelGL.poly_pos[chosen_idx] = flatten(last_pos);
+      }
     }
+
+    BELOW_TRESHOLD = false;
     isDrawing = false;
     drawnObject = null;
     // console.log(shapes);
@@ -216,6 +223,8 @@ function events() {
       if (idx != -1) {
         BELOW_TRESHOLD = true;
         chosen_idx = idx;
+        modelGL.last_polygon_idx = modelGL.polygon_idx;
+        modelGL.last_num = modelGL.numPolygons;
         console.log(chosen_idx);
       }
     }
@@ -232,8 +241,15 @@ function events() {
     ];
 
     modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
-    var offSet = modelGL.polygon_idx - modelGL.numIndices[modelGL.numPolygons];
-    for (var idx = 0; idx < modelGL.numIndices[modelGL.numPolygons]; idx++) {
+    var offSet =
+      modelGL.last_polygon_idx - modelGL.numIndices[modelGL.last_num];
+    console.log(
+      "woi",
+      modelGL.last_polygon_idx,
+      modelGL.numIndices[modelGL.last_num]
+    );
+    for (var idx = 0; idx < modelGL.numIndices[modelGL.last_num]; idx++) {
+      console.log("woi");
       modelGL.gl.bufferSubData(
         modelGL.gl.ARRAY_BUFFER,
         (offSet + idx) * 16,

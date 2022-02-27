@@ -32,6 +32,9 @@ class ModelGL {
     this.line_start = [];
     this.line_end = [];
 
+    this.last_polygon_idx;
+    this.last_num;
+
     this.mouseClicked = false;
   }
 
@@ -47,6 +50,9 @@ class ModelGL {
     this.start = data.start;
     this.poly_pos = data.poly_pos;
     this.poly_col = data.poly_col;
+
+    this.last_polygon_idx = data.last_polygon_idx;
+    this.last_num = data.last_num;
 
     this.mouseClicked = false;
   }
