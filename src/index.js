@@ -25,6 +25,7 @@ import {
   flatten,
   isPointOfShapes,
   leastStartIndex,
+  pointIsInPoly,
 } from "./helpers/helper";
 import { ModelGL } from "./model/webgl";
 import { createRectangle, render_rectangle } from "./create/rectangle";
@@ -336,6 +337,55 @@ function events() {
           moveSquare(chosen_idx, modelGL);
         }
       }
+
+      if (menu_features_idx == 7) {
+        var idx_poly = 0;
+        var poly_pos_to_color = -1;
+        var poly_pos_to_color_idx = -1;
+        console.log(modelGL);
+        for (let i = 0; i < modelGL.numIndices.length; i++) {
+          var polygon = [];
+          console.log("iop");
+          console.log("iop");
+          for (let j = 0; j < modelGL.numIndices[i]; j++) {
+            console.log(modelGL.poly_pos[0]);
+            console.log("iop");
+            var p = {
+              x: modelGL.poly_pos[idx_poly][0],
+              y: modelGL.poly_pos[idx_poly][1],
+            };
+            polygon.push(p);
+            idx_poly++;
+          }
+          if (polygon.length != 0) {
+            var tflat = flatten(t);
+            var p_curr = { x: tflat[0], y: tflat[1] };
+            console.log(p_curr, polygon);
+            if (pointIsInPoly(p_curr, polygon)) {
+              poly_pos_to_color = idx_poly - modelGL.numIndices[i];
+              poly_pos_to_color_idx = i;
+              break;
+            }
+          }
+        }
+        modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
+        for (
+          var idx = 0;
+          idx < modelGL.numIndices[poly_pos_to_color_idx];
+          idx++
+        ) {
+          modelGL.gl.bufferSubData(
+            modelGL.gl.ARRAY_BUFFER,
+            (poly_pos_to_color + idx) * 16,
+            new Float32Array([
+              modelGL.chosen_color[0],
+              modelGL.chosen_color[1],
+              modelGL.chosen_color[2],
+              modelGL.chosen_color[3],
+            ])
+          );
+        }
+      }
     }
   });
 
@@ -348,27 +398,6 @@ function events() {
       hexTodec(color.slice(5, 7)) / 255,
       1.0,
     ];
-
-    modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.cBufferId);
-    var offSet =
-      modelGL.last_polygon_idx - modelGL.numIndices[modelGL.last_num];
-    console.log(
-      "woi",
-      modelGL.last_polygon_idx,
-      modelGL.numIndices[modelGL.last_num]
-    );
-    for (var idx = 0; idx < modelGL.numIndices[modelGL.last_num]; idx++) {
-      modelGL.gl.bufferSubData(
-        modelGL.gl.ARRAY_BUFFER,
-        (offSet + idx) * 16,
-        new Float32Array([
-          modelGL.chosen_color[0],
-          modelGL.chosen_color[1],
-          modelGL.chosen_color[2],
-          modelGL.chosen_color[3],
-        ])
-      );
-    }
   });
 
   let formatJSONPrefix = "data:text/json;charset=utf-8,";
