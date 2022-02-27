@@ -72,15 +72,12 @@ function euclidean_distance(x1, y1, x2, y2) {
 }
 
 function leastStartIndex(pointIdx, modelGL) {
-  let idxPoly = 0;
-  while (modelGL.start[idxPoly] < pointIdx && idxPoly < modelGL.start.length) {
-    idxPoly++;
+  for (let i = modelGL.start.length - 1; i >= 0; i--) {
+    if (modelGL.start[i] <= pointIdx) {
+      if (i === modelGL.start.length - 1) return -1;
+      return modelGL.start[i];
+    }
   }
-  if (idxPoly === modelGL.start.length) return -1;
-  if (modelGL.start[idxPoly] === pointIdx) {
-    return idxPoly
-  }
-  return idxPoly-1;
 }
 
 function isPointOfShapes(pointIdx, shape, modelGL) {
@@ -88,7 +85,7 @@ function isPointOfShapes(pointIdx, shape, modelGL) {
   if (leastStartIdx === -1) {
     return false;
   }
-  return modelGL.shapes[leastStartIdx] === shape;
+  return modelGL.shapes[modelGL.start.indexOf(leastStartIdx)] === shape;
 }
 
 function midPoint(p1, p2) {

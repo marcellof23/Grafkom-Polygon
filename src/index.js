@@ -271,19 +271,20 @@ function events() {
       if (idx != -1 && isPointOfShapes(idx, 3, modelGL)) {
         BELOW_TRESHOLD = true;
         chosen_idx = idx;
-        console.log(chosen_idx);
+        
         last_pos = t;
       }
     }
     if (menu_features_idx == 5) {
       const idx = search_vertices(t, modelGL);
+      
       if (idx != -1 && isPointOfShapes(idx, 0, modelGL)) {
         BELOW_TRESHOLD = true;
         chosen_idx = idx;
-        console.log(chosen_idx);
         chosen_start_idx = leastStartIndex(idx, modelGL);
+        
         moveLine(chosen_idx, modelGL);
-        console.log(modelGL)
+        
       }
     }
     if (menu_features_idx == 6) {
@@ -292,7 +293,7 @@ function events() {
         BELOW_TRESHOLD = true;
         chosen_idx = idx;
         chosen_start_idx = leastStartIndex(idx, modelGL);
-        console.log(chosen_idx);
+        
         moveSquare(chosen_idx, modelGL)
       }
     }
