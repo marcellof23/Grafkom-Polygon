@@ -78,7 +78,7 @@ function leastStartIndex(pointIdx, modelGL) {
   }
   if (idxPoly === modelGL.start.length) return -1;
   if (modelGL.start[idxPoly] === pointIdx) {
-    return pointIdx
+    return idxPoly
   }
   return idxPoly-1;
 }

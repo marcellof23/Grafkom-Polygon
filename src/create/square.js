@@ -24,6 +24,18 @@ function render_square(modelGL) {
   }
 }
 
+function render_old_square(startIdx, modelGL) {
+  modelGL.gl.bindBuffer(modelGL.gl.ARRAY_BUFFER, modelGL.bufferId);
+  let line = createSquare(modelGL.point_start, modelGL.point_end);
+  for (let i = 0; i < 4; i++) {
+    modelGL.gl.bufferSubData(
+      modelGL.gl.ARRAY_BUFFER,
+      8 * (i + startIdx),
+      flatten(vec2(line[i * 2], line[i * 2 + 1]))
+    );
+  }
+}
+
 function createSquare(start, end) {
     const dx = end[0] - start[0],
         dy = end[1] - start[1],

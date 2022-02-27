@@ -4,12 +4,12 @@ const threshold = 0.02;
 
 function search_vertices(curr_point, modelGL) {
   for (let i = 0; i < modelGL.poly_pos.length; i++) {
-    console.log(euclidean_distance(
-      modelGL.poly_pos[i][0],
-      modelGL.poly_pos[i][1],
-      curr_point[0],
-      curr_point[1]
-    ))
+    // console.log(euclidean_distance(
+    //   modelGL.poly_pos[i][0],
+    //   modelGL.poly_pos[i][1],
+    //   curr_point[0],
+    //   curr_point[1]
+    // ))
     if (
       euclidean_distance(
         modelGL.poly_pos[i][0],

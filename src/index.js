@@ -263,9 +263,6 @@ function events() {
     }
     if (menu_features_idx == 4) {
       var idx = search_vertices(t, modelGL);
-      console.log(idx);
-      console.log(leastStartIndex(idx, modelGL));
-      console.log(isPointOfShapes(idx, 3, modelGL))
       if (idx != -1 && isPointOfShapes(idx, 3, modelGL)) {
         BELOW_TRESHOLD = true;
         chosen_idx = idx;
@@ -275,7 +272,6 @@ function events() {
     }
     if (menu_features_idx == 5) {
       const idx = search_vertices(t, modelGL);
-      console.log(idx)
       if (idx != -1 && isPointOfShapes(idx, 0, modelGL)) {
         BELOW_TRESHOLD = true;
         chosen_idx = idx;
