@@ -140,12 +140,12 @@ function events() {
   });
 
   modelGL.canvas.addEventListener("mousemove", (e) => {
+    const x = (2 * e.clientX) / modelGL.canvas.width - 1;
+    const y =
+      (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1;
+    document.getElementById("clientX").innerHTML = x.toFixed(2);
+    document.getElementById("clientY").innerHTML = y.toFixed(2);
     if (isChecked) {
-      const x = (2 * e.clientX) / modelGL.canvas.width - 1;
-      const y =
-        (2 * (modelGL.canvas.height - e.clientY)) / modelGL.canvas.height - 1;
-      document.getElementById("clientX").innerHTML = x.toFixed(2);
-      document.getElementById("clientY").innerHTML = y.toFixed(2);
       if (isDrawing) {
         if (menu_features_idx == 0) {
           modelGL.point_end = vec2(x, y);
